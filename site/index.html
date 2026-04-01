@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pocket Buddy Gallery</title>
+  <meta name="description" content="Pocket Buddy is a public gallery for Claude Code buddies with species cards, rarity tiers, traits, and launch links.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <nav class="topbar">
+        <div class="brand">
+          <span class="brand-badge">PB</span>
+          <span class="brand-name">Pocket Buddy</span>
+        </div>
+        <div class="nav-links">
+          <a href="#gallery">Gallery</a>
+          <a href="#rarity">Rarity</a>
+          <a href="#launch">Launch</a>
+        </div>
+      </nav>
+
+      <div class="hero-grid">
+        <section class="hero-copy">
+          <p class="eyebrow">Claude Code /buddy Gallery</p>
+          <h1>Meet the coding buddies hiding inside Claude Code.</h1>
+          <p class="lede">
+            Pocket Buddy turns the secret buddy system into a real collection page:
+            18 species, 5 rarity tiers, shiny variants, hats, eyes, stats, and souls.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#gallery">Explore the Gallery</a>
+            <a class="button secondary" href="https://github.com/kaiknower/pocket-buddy">View GitHub</a>
+          </div>
+          <div class="hero-pills">
+            <span>18 species</span>
+            <span>5 rarities</span>
+            <span>Auto-generated names & personalities</span>
+          </div>
+        </section>
+
+        <section class="hero-stage" aria-label="Featured buddies">
+          <article class="featured-card rarity-legendary floating-card">
+            <div class="featured-head">
+              <span class="star">★★★★★</span>
+              <span class="label">legendary</span>
+            </div>
+            <div class="featured-icon">🐉</div>
+            <h2>Dragon</h2>
+            <p>Terminal royalty with a wizard hat and zero patience for flaky tests.</p>
+          </article>
+
+          <article class="featured-card rarity-epic floating-card floating-delay">
+            <div class="featured-head">
+              <span class="star">★★★★</span>
+              <span class="label">epic</span>
+            </div>
+            <div class="featured-icon">🦉</div>
+            <h2>Owl</h2>
+            <p>Late-night build guardian with calm eyes and suspiciously perfect wisdom.</p>
+          </article>
+
+          <article class="featured-card rarity-shiny floating-card floating-delay-2">
+            <div class="featured-head">
+              <span class="star">★★★★★ ✨</span>
+              <span class="label">shiny</span>
+            </div>
+            <div class="featured-icon">🐈</div>
+            <h2>Chonk</h2>
+            <p>Heavy aura. Soft attitude. Unreal levels of shiny confidence.</p>
+          </article>
+        </section>
+      </div>
+    </header>
+
+    <main>
+      <section class="section intro-grid">
+        <article class="info-panel">
+          <p class="eyebrow">Buddy Styles</p>
+          <h2>Every buddy has two layers.</h2>
+          <p>
+            The <strong>bones</strong> define species, rarity, hat, eyes, shiny, and stats.
+            The <strong>soul</strong> defines the generated name and personality.
+          </p>
+        </article>
+        <article class="info-panel">
+          <p class="eyebrow">Pocket Buddy</p>
+          <h2>Three ways to play.</h2>
+          <ul class="mode-list">
+            <li><strong>Random roll</strong> for official-probability buddies</li>
+            <li><strong>Targeted hunt</strong> for legal trait searching</li>
+            <li><strong>Full override</strong> for advanced patch-based control</li>
+          </ul>
+        </article>
+      </section>
+
+      <section class="section" id="gallery">
+        <div class="section-head">
+          <p class="eyebrow">Buddy Gallery</p>
+          <h2>All 18 species in one collection wall.</h2>
+        </div>
+        <div class="species-grid" id="species-grid"></div>
+      </section>
+
+      <section class="section rarity-section" id="rarity">
+        <div class="section-head">
+          <p class="eyebrow">Rarity</p>
+          <h2>Official probabilities, stronger visual tiers.</h2>
+        </div>
+        <div class="rarity-grid">
+          <article class="rarity-card rarity-common">
+            <span>★</span>
+            <h3>Common</h3>
+            <p>60%</p>
+          </article>
+          <article class="rarity-card rarity-uncommon">
+            <span>★★</span>
+            <h3>Uncommon</h3>
+            <p>25%</p>
+          </article>
+          <article class="rarity-card rarity-rare">
+            <span>★★★</span>
+            <h3>Rare</h3>
+            <p>10%</p>
+          </article>
+          <article class="rarity-card rarity-epic">
+            <span>★★★★</span>
+            <h3>Epic</h3>
+            <p>4%</p>
+          </article>
+          <article class="rarity-card rarity-legendary">
+            <span>★★★★★</span>
+            <h3>Legendary</h3>
+            <p>1%</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section traits-section">
+        <div class="section-head">
+          <p class="eyebrow">Traits</p>
+          <h2>Eyes, hats, shiny hits, and generated soul.</h2>
+        </div>
+
+        <div class="traits-layout">
+          <article class="trait-panel">
+            <h3>Eyes</h3>
+            <div class="chip-row">
+              <span>·</span><span>✦</span><span>×</span><span>◉</span><span>@</span><span>°</span>
+            </div>
+          </article>
+
+          <article class="trait-panel">
+            <h3>Hats</h3>
+            <div class="chip-row text-chips">
+              <span>👑 crown</span>
+              <span>🎩 tophat</span>
+              <span>🧢 propeller</span>
+              <span>😇 halo</span>
+              <span>🧙 wizard</span>
+              <span>⛑ beanie</span>
+              <span>🐤 tinyduck</span>
+            </div>
+          </article>
+
+          <article class="trait-panel">
+            <h3>Stats</h3>
+            <div class="stat-stack">
+              <div><label>Debugging</label><span></span></div>
+              <div><label>Patience</label><span></span></div>
+              <div><label>Chaos</label><span></span></div>
+              <div><label>Wisdom</label><span></span></div>
+              <div><label>Snark</label><span></span></div>
+            </div>
+          </article>
+
+          <article class="trait-panel soul-panel">
+            <h3>Generated Soul</h3>
+            <p>Name and personality can be auto-generated by Claude Code on first hatch, or replaced with your own custom version.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section launch-section" id="launch">
+        <div class="section-head">
+          <p class="eyebrow">Launch Pocket Buddy</p>
+          <h2>Open the CLI and start rolling.</h2>
+        </div>
+        <div class="launch-grid">
+          <article class="launch-card">
+            <h3>macOS / Linux</h3>
+            <code>curl -fsSL https://raw.githubusercontent.com/kaiknower/pocket-buddy/main/run.sh | bash</code>
+          </article>
+          <article class="launch-card">
+            <h3>Windows PowerShell</h3>
+            <code>irm https://raw.githubusercontent.com/kaiknower/pocket-buddy/main/run.ps1 | iex</code>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="./script.js"></script>
+</body>
+</html>

@@ -60,7 +60,7 @@ test('gallery opens an external web guide', async () => {
   const mod = await importFresh()
   const gallery = mod.getGalleryLink()
   assert.equal(gallery.label, 'Buddy Gallery')
-  assert.match(gallery.url, /^https:\/\//)
+  assert.equal(gallery.url, 'https://kaiknower.github.io/pocket-buddy/')
 })
 
 test('hero banner and buddy card use the enhanced display framing', async () => {
@@ -93,4 +93,10 @@ test('package metadata uses pocket-buddy naming', () => {
   const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
   assert.equal(pkg.name, 'pocket-buddy')
   assert.ok(pkg.bin['pocket-buddy'])
+})
+
+test('static site entry file exists for GitHub Pages', () => {
+  const site = readFileSync(new URL('../site/index.html', import.meta.url), 'utf8')
+  assert.match(site, /Pocket Buddy/)
+  assert.match(site, /Buddy Gallery/)
 })

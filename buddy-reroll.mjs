@@ -30,7 +30,7 @@ const SALT = 'friend-2026-401'
 const CONFIG_PATH = join(homedir(), '.claude.json')
 const PREF_PATH = process.env.POCKET_BUDDY_PREF_PATH || join(homedir(), '.pocket-buddy.json')
 const MIN_CLAUDE_VERSION = '2.1.89'
-const GALLERY_URL = 'https://spawnabuddy.com/'
+const GALLERY_URL = 'https://kaiknower.github.io/pocket-buddy/'
 
 const SPECIES = [
   'duck', 'goose', 'blob', 'cat', 'dragon', 'octopus', 'owl',
