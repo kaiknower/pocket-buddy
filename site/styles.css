@@ -85,10 +85,10 @@ a {
 
 .hero-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 28px;
+  grid-template-columns: minmax(0, 1.02fr) minmax(420px, 0.98fr);
+  gap: 40px;
   align-items: center;
-  padding: 48px 0 32px;
+  padding: 56px 0 40px;
 }
 
 .eyebrow {
@@ -181,7 +181,7 @@ h2 {
 
 .hero-stage {
   position: relative;
-  min-height: 620px;
+  min-height: 760px;
   isolation: isolate;
 }
 
@@ -197,63 +197,72 @@ h2 {
 }
 
 .orbit-a {
-  width: 440px;
-  height: 440px;
-  top: 80px;
-  left: 30px;
+  width: 520px;
+  height: 520px;
+  top: 56px;
+  left: 8px;
 }
 
 .orbit-b {
-  width: 320px;
-  height: 320px;
-  bottom: 40px;
-  right: 40px;
+  width: 360px;
+  height: 360px;
+  bottom: 64px;
+  right: 8px;
 }
 
 .hero-glow {
-  width: 340px;
-  height: 340px;
-  top: 110px;
-  right: 100px;
-  background: radial-gradient(circle, rgba(125,239,255,0.18), transparent 70%);
-  filter: blur(8px);
+  width: 420px;
+  height: 420px;
+  top: 120px;
+  right: 70px;
+  background: radial-gradient(circle, rgba(125,239,255,0.22), transparent 70%);
+  filter: blur(18px);
   z-index: -1;
 }
 
 .featured-card {
   position: absolute;
-  width: min(100%, 340px);
-  padding: 22px;
-  border-radius: 28px;
-  background: linear-gradient(180deg, rgba(18, 28, 44, 0.96), rgba(11, 18, 30, 0.9));
+  width: min(100%, 320px);
+  padding: 24px;
+  border-radius: 30px;
+  background:
+    linear-gradient(180deg, rgba(26, 38, 58, 0.98), rgba(11, 18, 30, 0.92));
   border: 1px solid rgba(255, 255, 255, 0.09);
   box-shadow: var(--shadow);
   overflow: hidden;
 }
 
+.featured-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.12), transparent 36%, transparent 64%, rgba(255,255,255,0.08));
+  opacity: 0.5;
+}
+
 .featured-card::after {
   content: "";
   position: absolute;
-  inset: auto -20% -35% auto;
-  width: 180px;
-  height: 180px;
+  inset: auto -18% -36% auto;
+  width: 220px;
+  height: 220px;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(255,255,255,0.14), transparent 70%);
 }
 
-.featured-card:nth-child(1) {
-  top: 20px;
-  right: 16px;
+.featured-dragon {
+  top: 12px;
+  right: 18px;
 }
 
-.featured-card:nth-child(2) {
-  left: 0;
-  top: 190px;
+.featured-owl {
+  left: 22px;
+  top: 236px;
 }
 
-.featured-card:nth-child(3) {
-  right: 28px;
-  bottom: 12px;
+.featured-chonk {
+  right: 46px;
+  bottom: 28px;
 }
 
 .featured-head {
@@ -270,17 +279,23 @@ h2 {
   font-size: 70px;
   line-height: 1;
   margin: 28px 0 16px;
+  position: relative;
+  z-index: 1;
 }
 
 .featured-card h2 {
   font-size: 34px;
   margin-bottom: 10px;
+  position: relative;
+  z-index: 1;
 }
 
 .featured-card p {
   color: var(--muted);
   line-height: 1.55;
   margin-bottom: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .rarity-legendary {
@@ -388,6 +403,14 @@ h2 {
   box-shadow: 0 0 0 1px rgba(115,183,255,0.14), var(--shadow);
 }
 
+.showcase-card {
+  min-height: 330px;
+}
+
+.showcase-panel {
+  min-height: 330px;
+}
+
 .showcase-top,
 .showcase-tags {
   display: flex;
@@ -436,10 +459,12 @@ h2 {
 
 .species-card {
   position: relative;
-  min-height: 220px;
-  padding: 22px 18px;
+  min-height: 246px;
+  padding: 22px 18px 20px;
   overflow: hidden;
   transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+  background:
+    linear-gradient(180deg, rgba(22, 31, 50, 0.94), rgba(10, 17, 29, 0.92));
 }
 
 .species-card::before {
@@ -460,7 +485,7 @@ h2 {
 
 .species-card:hover,
 .species-card.active {
-  transform: translateY(-6px);
+  transform: translateY(-8px) rotate(-0.3deg);
   border-color: rgba(157, 252, 127, 0.34);
   box-shadow: 0 0 0 1px rgba(157, 252, 127, 0.16), 0 24px 50px rgba(0, 0, 0, 0.34);
 }
@@ -475,7 +500,7 @@ h2 {
 }
 
 .species-icon {
-  font-size: 44px;
+  font-size: 50px;
   line-height: 1;
 }
 
@@ -489,8 +514,8 @@ h2 {
 .species-card h3 {
   position: relative;
   z-index: 1;
-  margin: 24px 0 8px;
-  font-size: 22px;
+  margin: 20px 0 8px;
+  font-size: 24px;
 }
 
 .species-card p {
@@ -537,6 +562,19 @@ h2 {
   color: var(--text);
 }
 
+.tier-common { box-shadow: inset 0 0 0 1px rgba(230,237,247,0.12), var(--shadow); }
+.tier-uncommon { box-shadow: inset 0 0 0 1px rgba(157,252,127,0.16), 0 0 38px rgba(157,252,127,0.08), var(--shadow); }
+.tier-rare { box-shadow: inset 0 0 0 1px rgba(115,183,255,0.18), 0 0 42px rgba(115,183,255,0.1), var(--shadow); }
+.tier-epic { box-shadow: inset 0 0 0 1px rgba(255,147,217,0.18), 0 0 46px rgba(255,147,217,0.12), var(--shadow); }
+.tier-legendary { box-shadow: inset 0 0 0 1px rgba(255,214,110,0.22), 0 0 56px rgba(255,214,110,0.14), var(--shadow); }
+.tier-shiny {
+  box-shadow:
+    inset 0 0 0 1px rgba(125,239,255,0.24),
+    0 0 60px rgba(125,239,255,0.18),
+    0 0 0 1px rgba(255,255,255,0.08),
+    var(--shadow);
+}
+
 .rarity-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -544,16 +582,34 @@ h2 {
 }
 
 .rarity-card {
-  padding: 22px;
+  padding: 24px;
   text-align: center;
   position: relative;
   overflow: hidden;
+  min-height: 210px;
+  background:
+    linear-gradient(180deg, rgba(22, 31, 50, 0.96), rgba(10, 17, 29, 0.94));
+}
+
+.rarity-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, rgba(255,255,255,0.12), transparent 40%, transparent 70%, rgba(255,255,255,0.06));
 }
 
 .rarity-card span {
   display: block;
-  font-size: 32px;
-  margin-bottom: 14px;
+  font-size: 36px;
+  margin: 10px 0 18px;
+  position: relative;
+  z-index: 1;
+}
+
+.rarity-card h3,
+.rarity-card p {
+  position: relative;
+  z-index: 1;
 }
 
 .rarity-card p {
@@ -561,11 +617,11 @@ h2 {
   margin-bottom: 0;
 }
 
-.rarity-common { box-shadow: inset 0 0 0 1px rgba(230,237,247,0.12); }
-.rarity-uncommon { box-shadow: inset 0 0 0 1px rgba(157,252,127,0.16), 0 0 40px rgba(157,252,127,0.08); }
-.rarity-rare { box-shadow: inset 0 0 0 1px rgba(115,183,255,0.18), 0 0 40px rgba(115,183,255,0.08); }
-.rarity-epic { box-shadow: inset 0 0 0 1px rgba(255,147,217,0.18), 0 0 48px rgba(255,147,217,0.1); }
-.rarity-legendary { box-shadow: inset 0 0 0 1px rgba(255,214,110,0.2), 0 0 56px rgba(255,214,110,0.12); }
+.rarity-common { box-shadow: inset 0 0 0 1px rgba(230,237,247,0.16), 0 0 30px rgba(230,237,247,0.04); }
+.rarity-uncommon { box-shadow: inset 0 0 0 1px rgba(157,252,127,0.18), 0 0 52px rgba(157,252,127,0.1); }
+.rarity-rare { box-shadow: inset 0 0 0 1px rgba(115,183,255,0.22), 0 0 56px rgba(115,183,255,0.12); }
+.rarity-epic { box-shadow: inset 0 0 0 1px rgba(255,147,217,0.24), 0 0 60px rgba(255,147,217,0.14); }
+.rarity-legendary { box-shadow: inset 0 0 0 1px rgba(255,214,110,0.28), 0 0 70px rgba(255,214,110,0.18); }
 
 .rarity-common span { color: #e6edf7; }
 .rarity-uncommon span { color: var(--lime); }
@@ -643,6 +699,7 @@ code {
 @media (max-width: 1100px) {
   .hero-grid,
   .intro-grid,
+  .showcase-grid,
   .launch-grid,
   .traits-layout,
   .rarity-grid {
@@ -654,8 +711,12 @@ code {
   }
 
   .hero-stage {
-    min-height: 760px;
+    min-height: 860px;
   }
+
+  .featured-dragon { top: 10px; right: 0; }
+  .featured-owl { left: 0; top: 290px; }
+  .featured-chonk { right: 0; bottom: 24px; }
 }
 
 @media (max-width: 740px) {
@@ -692,5 +753,9 @@ code {
     position: relative;
     inset: auto;
     width: 100%;
+  }
+
+  .hero-grid {
+    grid-template-columns: 1fr;
   }
 }
