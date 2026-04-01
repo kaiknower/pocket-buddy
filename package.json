@@ -1,0 +1,39 @@
+{
+  "name": "pocket-buddy",
+  "version": "2.2.3",
+  "description": "Pocket Buddy for Claude Code /buddy. Launch once, pick a pet fast, and switch language later in Settings.",
+  "type": "module",
+  "bin": {
+    "pocket-buddy": "./buddy-reroll.mjs"
+  },
+  "scripts": {
+    "start": "node buddy-reroll.mjs",
+    "search": "node buddy-reroll.mjs search",
+    "check": "node buddy-reroll.mjs check",
+    "gallery": "node buddy-reroll.mjs gallery",
+    "selftest": "node buddy-reroll.mjs selftest"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "buddy",
+    "pet",
+    "reroll",
+    "companion",
+    "anthropic"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "files": [
+    "buddy-reroll.mjs",
+    "LICENSE",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kaiknower/pocket-buddy.git"
+  }
+}
