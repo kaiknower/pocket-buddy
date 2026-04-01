@@ -50,6 +50,7 @@ test('interactive mode starts with quick-start search', async () => {
   const mod = await importFresh()
   assert.equal(mod.getInteractiveEntryPoint(), 'home')
   assert.deepEqual(mod.getHomeModes(), ['random-roll', 'targeted-hunt', 'tools'])
+  assert.deepEqual(mod.getToolsModes(), ['check', 'gallery', 'preview', 'patch', 'web-gallery', 'selftest', 'settings', 'back', 'exit'])
   assert.deepEqual(mod.getPostSearchActions(), ['apply', 'retry', 'tools', 'exit'])
   assert.deepEqual(mod.getSoulModes(), ['auto', 'custom', 'keep'])
   assert.equal(mod.getSoulModeChoices(false).length, 2)
@@ -78,6 +79,23 @@ test('hero banner and buddy card use the enhanced display framing', async () => 
   assert.match(card, /Trait/)
   assert.match(card, /Power/)
   assert.match(card, /Seed/)
+})
+
+test('preview helper builds a matching buddy card shape', async () => {
+  const mod = await importFresh()
+  const preview = mod.buildPreviewBuddy({
+    species: 'duck',
+    rarity: 'epic',
+    eye: '◉',
+    hat: 'wizard',
+    shiny: true,
+  })
+  assert.equal(preview.species, 'duck')
+  assert.equal(preview.rarity, 'epic')
+  assert.equal(preview.eye, '◉')
+  assert.equal(preview.hat, 'wizard')
+  assert.equal(preview.shiny, true)
+  assert.equal(typeof preview.stats.DEBUGGING, 'number')
 })
 
 test('retro search helpers expose pet-console framing', async () => {
