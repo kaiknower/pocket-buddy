@@ -100,6 +100,6 @@ test('static site entry file exists for GitHub Pages', () => {
   const site = readFileSync(new URL('../site/index.html', import.meta.url), 'utf8')
   assert.match(site, /Pocket Buddy/)
   assert.match(site, /Buddy Gallery/)
-  assert.match(site, /Preview how a finished buddy can look/i)
-  assert.match(site, /Showcase/i)
+  assert.match(site, /Build your buddy/i)
+  assert.match(site, /CLI Preview/i)
 })

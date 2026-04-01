@@ -375,12 +375,14 @@ h2 {
   line-height: 1.8;
 }
 
-.showcase-grid {
-  grid-template-columns: 1fr 1fr 0.9fr;
+.builder-grid {
+  display: grid;
+  grid-template-columns: 0.92fr 1.08fr;
+  gap: 22px;
 }
 
-.showcase-card,
-.showcase-panel {
+.builder-panel,
+.preview-shell {
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 30px;
@@ -390,8 +392,8 @@ h2 {
   overflow: hidden;
 }
 
-.showcase-card::before,
-.showcase-panel::before {
+.builder-panel::before,
+.preview-shell::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -399,56 +401,81 @@ h2 {
   pointer-events: none;
 }
 
-.showcase-card.alt {
-  box-shadow: 0 0 0 1px rgba(115,183,255,0.14), var(--shadow);
+.builder-panel h3,
+.preview-shell {
+  position: relative;
+  z-index: 1;
 }
 
-.showcase-card {
-  min-height: 330px;
+.builder-group {
+  position: relative;
+  z-index: 1;
+  margin-top: 18px;
 }
 
-.showcase-panel {
-  min-height: 330px;
+.builder-group label {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--muted);
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
-.showcase-top,
-.showcase-tags {
+.option-row,
+.toggle-row {
   display: flex;
-  justify-content: space-between;
   gap: 10px;
   flex-wrap: wrap;
-  position: relative;
-  z-index: 1;
 }
 
-.showcase-kicker,
-.showcase-rarity,
-.showcase-tags span {
-  display: inline-flex;
-  align-items: center;
-  min-height: 32px;
-  padding: 0 12px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.06);
+.option-chip,
+.toggle-chip {
   border: 1px solid var(--line);
+  background: rgba(255,255,255,0.05);
+  color: var(--text);
+  border-radius: 999px;
+  min-height: 38px;
+  padding: 0 14px;
+  font: inherit;
+  cursor: pointer;
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.option-chip:hover,
+.toggle-chip:hover,
+.option-chip.active,
+.toggle-chip.active {
+  transform: translateY(-1px);
+  border-color: rgba(157,252,127,0.4);
+  background: rgba(157,252,127,0.12);
+}
+
+.preview-head {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
   color: var(--muted);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 16px;
 }
 
-.showcase-icon {
+.preview-terminal {
   position: relative;
   z-index: 1;
-  font-size: 72px;
-  line-height: 1;
-  margin: 22px 0 14px;
-}
-
-.showcase-card h3,
-.showcase-card p,
-.showcase-panel h3,
-.showcase-panel p,
-.showcase-panel ul {
-  position: relative;
-  z-index: 1;
+  margin: 0;
+  min-height: 560px;
+  padding: 22px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(5,10,18,0.95), rgba(13,22,36,0.95));
+  border: 1px solid rgba(255,255,255,0.06);
+  color: var(--text);
+  font: 700 13px/1.65 "Courier New", monospace;
+  white-space: pre-wrap;
 }
 
 .species-grid {
@@ -699,7 +726,7 @@ code {
 @media (max-width: 1100px) {
   .hero-grid,
   .intro-grid,
-  .showcase-grid,
+  .builder-grid,
   .launch-grid,
   .traits-layout,
   .rarity-grid {
