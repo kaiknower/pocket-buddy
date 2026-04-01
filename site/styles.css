@@ -324,6 +324,7 @@ h2 {
 }
 
 .intro-grid,
+.showcase-grid,
 .launch-grid,
 .traits-layout {
   display: grid;
@@ -357,6 +358,74 @@ h2 {
   padding-left: 18px;
   color: var(--muted);
   line-height: 1.8;
+}
+
+.showcase-grid {
+  grid-template-columns: 1fr 1fr 0.9fr;
+}
+
+.showcase-card,
+.showcase-panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 30px;
+  box-shadow: var(--shadow);
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.showcase-card::before,
+.showcase-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top right, rgba(255,255,255,0.12), transparent 34%);
+  pointer-events: none;
+}
+
+.showcase-card.alt {
+  box-shadow: 0 0 0 1px rgba(115,183,255,0.14), var(--shadow);
+}
+
+.showcase-top,
+.showcase-tags {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+
+.showcase-kicker,
+.showcase-rarity,
+.showcase-tags span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--line);
+  color: var(--muted);
+}
+
+.showcase-icon {
+  position: relative;
+  z-index: 1;
+  font-size: 72px;
+  line-height: 1;
+  margin: 22px 0 14px;
+}
+
+.showcase-card h3,
+.showcase-card p,
+.showcase-panel h3,
+.showcase-panel p,
+.showcase-panel ul {
+  position: relative;
+  z-index: 1;
 }
 
 .species-grid {

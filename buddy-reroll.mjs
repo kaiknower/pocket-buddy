@@ -90,7 +90,6 @@ const I = {
   menu_search:     { en: '🔍  Search for a buddy',            zh: '🔍  搜索宠物' },
   menu_check:      { en: '👀  Check current buddy',           zh: '👀  查看当前宠物' },
   menu_gallery:    { en: '📋  Species gallery',               zh: '📋  物种图鉴' },
-  menu_preview:    { en: '🪄  Preview builder',               zh: '🪄  预览构建器' },
   menu_selftest:   { en: '🧪  Self-test hash',                zh: '🧪  自检 Hash' },
   menu_lang:       { en: '🌐  Switch language',               zh: '🌐  切换语言' },
   menu_exit:       { en: '👋  Exit',                          zh: '👋  退出' },
@@ -101,10 +100,6 @@ const I = {
   open_gallery:    { en: '🌐  Open web gallery',             zh: '🌐  打开网页图鉴' },
   gallery_title:   { en: 'Pocket Buddy Species Gallery',     zh: 'Pocket Buddy 物种图鉴' },
   gallery_hint:    { en: 'Each card previews how a species can look in the CLI.', zh: '每张卡片都预览该物种在 CLI 里的展示效果。' },
-  preview_title:   { en: 'Preview builder',                  zh: '预览构建器' },
-  preview_hint:    { en: 'Build a buddy card preview before hunting for it.', zh: '先预览效果，再决定要不要开始搜索。' },
-  preview_target:  { en: 'Start targeted hunt with these traits', zh: '用这些配置开始定向搜索' },
-  preview_again:   { en: 'Build another preview',            zh: '重新做一个预览' },
   gallery_opening: { en: 'Opening buddy gallery: {0}',       zh: '正在打开网页图鉴: {0}' },
   gallery_manual:  { en: 'Open this link manually: {0}',     zh: '请手动打开这个链接: {0}' },
   next_title:      { en: 'What next?',                       zh: '下一步做什么？' },
@@ -486,7 +481,7 @@ export function getHomeModes() {
 }
 
 export function getToolsModes() {
-  return ['check', 'gallery', 'preview', 'patch', 'web-gallery', 'selftest', 'settings', 'back', 'exit']
+  return ['check', 'gallery', 'patch', 'web-gallery', 'selftest', 'settings', 'back', 'exit']
 }
 
 export function getPostSearchActions() {
@@ -724,45 +719,6 @@ function interactiveWebGallery() {
   const { url } = getGalleryLink()
   console.log(c(ESC.cyan, `\n  ${t('gallery_opening', url)}\n`))
   if (!openExternalUrl(url)) console.log(c(ESC.yellow, `  ${t('gallery_manual', url)}\n`))
-}
-
-async function interactivePreviewBuilder() {
-  console.log(`\n  ${c(ESC.bold + ESC.cyan, t('preview_title'))}`)
-  console.log(c(ESC.dim, `  ${t('preview_hint')}\n`))
-
-  const spItems = SPECIES.map(s => `${SPECIES_EMOJI[s]}  ${s}`)
-  const spIdx = await select(t('si_species'), spItems, true)
-  const species = spIdx >= 0 ? SPECIES[spIdx] : 'dragon'
-
-  const rarItems = RARITIES.map(r => `${c(RARITY_CLR[r], RARITY_STARS[r])} ${r}`)
-  const rarIdx = await select(t('si_rarity'), rarItems, true)
-  const rarity = rarIdx >= 0 ? RARITIES[rarIdx] : 'legendary'
-
-  const eyeItems = EYES.map(e => `  ${e}`)
-  const eyeIdx = await select(t('si_eye'), eyeItems, true)
-  const eye = eyeIdx >= 0 ? EYES[eyeIdx] : undefined
-
-  const hatItems = HATS.map(h => `${HAT_EMOJI[h]}  ${h}`)
-  const hatIdx = await select(t('si_hat'), hatItems, true)
-  const hat = hatIdx >= 0 ? HATS[hatIdx] : undefined
-
-  const shinyAns = await ask(`\n  ${t('si_shiny')} `)
-  const shiny = shinyAns.toLowerCase().startsWith('y')
-
-  const config = { species, rarity, eye, hat, shiny }
-  const buddy = buildPreviewBuddy(config)
-  console.log(getResultBannerText())
-  console.log(formatBuddy(buddy, 'preview-build', true))
-
-  const next = await select(t('next_title'), [
-    t('preview_target'),
-    t('preview_again'),
-    t('tools_back'),
-  ])
-
-  if (next === 0) return await interactiveSearch(config)
-  if (next === 1) return await interactivePreviewBuilder()
-  return null
 }
 
 function interactiveSelftest() {
@@ -1071,7 +1027,6 @@ async function interactiveToolsMenu() {
       t('menu_check'),
       t('menu_diy'),
       t('menu_gallery'),
-      t('menu_preview'),
       t('menu_patch'),
       t('open_gallery'),
       t('menu_selftest'),
@@ -1094,24 +1049,21 @@ async function interactiveToolsMenu() {
         await ask(`\n  ${c(ESC.dim, t('press_enter'))} `)
         break
       case 3:
-        await interactivePreviewBuilder()
-        break
-      case 4:
         await interactivePatch()
         await ask(`\n  ${c(ESC.dim, t('press_enter'))} `)
         break
-      case 5:
+      case 4:
         interactiveWebGallery()
         await ask(`\n  ${c(ESC.dim, t('press_enter'))} `)
         break
-      case 6:
+      case 5:
         interactiveSelftest()
         await ask(`\n  ${c(ESC.dim, t('press_enter'))} `)
         break
-      case 7:
+      case 6:
         await interactiveSettings()
         break
-      case 8:
+      case 7:
         return
       default:
         console.log('')
