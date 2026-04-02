@@ -1,134 +1,20 @@
-const species = [
-  { icon: "🦆", name: "duck", tier: "common", vibe: "Classic debugging sidekick.", trait: "steady" },
-  { icon: "🪿", name: "goose", tier: "rare", vibe: "Loud, brave, slightly chaotic.", trait: "bold" },
-  { icon: "🫧", name: "blob", tier: "rare", vibe: "Pure mystery in soft form.", trait: "weird" },
-  { icon: "🐱", name: "cat", tier: "epic", vibe: "Quiet confidence with sharp judgment.", trait: "cool" },
-  { icon: "🐉", name: "dragon", tier: "legendary", vibe: "Legend-tier terminal energy.", trait: "mythic" },
-  { icon: "🐙", name: "octopus", tier: "rare", vibe: "Multitasking master of tentacles.", trait: "adapt" },
-  { icon: "🦉", name: "owl", tier: "epic", vibe: "Late-night wisdom specialist.", trait: "wise" },
-  { icon: "🐧", name: "penguin", tier: "uncommon", vibe: "Cool under pressure and compile time.", trait: "stable" },
-  { icon: "🐢", name: "turtle", tier: "rare", vibe: "Slow build, stable output.", trait: "patient" },
-  { icon: "🐌", name: "snail", tier: "common", vibe: "Unhurried but surprisingly resilient.", trait: "steady" },
-  { icon: "👻", name: "ghost", tier: "legendary", vibe: "Floats through race conditions.", trait: "stealth" },
-  { icon: "🦎", name: "axolotl", tier: "rare", vibe: "Odd, lovable, impossible to ignore.", trait: "cute" },
-  { icon: "🦫", name: "capybara", tier: "epic", vibe: "Maximum calm in production.", trait: "calm" },
-  { icon: "🌵", name: "cactus", tier: "uncommon", vibe: "Sharp edges, strong uptime.", trait: "tough" },
-  { icon: "🤖", name: "robot", tier: "legendary", vibe: "Precise, relentless, a little smug.", trait: "exact" },
-  { icon: "🐰", name: "rabbit", tier: "rare", vibe: "Fast hops between fixes.", trait: "fast" },
-  { icon: "🍄", name: "mushroom", tier: "epic", vibe: "Soft glow with hidden power.", trait: "glow" },
-  { icon: "🐈", name: "chonk", tier: "shiny", vibe: "Peak mass, peak presence.", trait: "heavy" },
-]
+import {
+  buddyArtManifest,
+  defaultBuddyState,
+  eyeById,
+  hatById,
+  normalizeBuddyState,
+  rarityById,
+  speciesById,
+} from './buddy-art/manifest.js'
+import { renderBuddySvg } from './buddy-art/renderer.js'
 
-const rarities = ["common", "uncommon", "rare", "epic", "legendary"]
-const rarityStars = { common: "★", uncommon: "★★", rare: "★★★", epic: "★★★★", legendary: "★★★★★" }
-const eyes = ["·", "✦", "×", "◉", "@", "°"]
-const hats = ["none", "crown", "tophat", "propeller", "halo", "wizard", "beanie", "tinyduck"]
-const hatEmoji = { none: "—", crown: "👑", tophat: "🎩", propeller: "🧢", halo: "😇", wizard: "🧙", beanie: "⛑", tinyduck: "🐤" }
+const state = { ...defaultBuddyState }
 
-const state = {
-  species: "dragon",
-  rarity: "legendary",
-  eye: "◉",
-  hat: "wizard",
-  shiny: true,
-}
-
-function getAsciiPet(speciesName, eye) {
-  const e = eye || "•"
-  const art = {
-    rabbit: [
-      "   /\\   /\\\\",
-      `  <  ${e} ${e}  >`,
-      " (   ~~   )",
-      "  `-vvvv-´",
-    ],
-    cat: [
-      " /\\_/\\\\",
-      `(${e} ${e})`,
-      "(  =^= )",
-      "(\")___(\")",
-    ],
-    duck: [
-      "   __",
-      ` >( ${e} )__`,
-      "  (___/   )",
-      "      `---´",
-    ],
-    dragon: [
-      "   /\\__/\\\\",
-      `  /  ${e}  ${e}  \\\\`,
-      " <    ^^    >",
-      "  `-v____v-´",
-    ],
-    ghost: [
-      "   .-\"\"-.",
-      `  / ${e}  ${e} \\\\`,
-      "  |  ~~  |",
-      "  `-.__.-´",
-    ],
-  }
-  return (art[speciesName] || [
-    "   .-^-.",
-    `  < ${e} ${e} >`,
-    "  (  ~~ )",
-    "   `---´",
-  ]).join("\n")
-}
-
-function renderSpeciesGrid() {
-  const grid = document.getElementById("species-grid")
-  if (!grid) return
-  grid.innerHTML = species.map((buddy, index) => `
-    <article class="species-card tier-${buddy.tier}" data-index="${index}">
-      <div class="species-foil"></div>
-      <div class="species-top">
-        <div class="species-icon">${buddy.icon}</div>
-        <span class="species-tag">${buddy.tier}</span>
-      </div>
-      <h3>${buddy.name}</h3>
-      <p>${buddy.vibe}</p>
-      <div class="species-traits">
-        <span>${buddy.trait}</span>
-        <span>${buddy.tier}</span>
-      </div>
-      <div class="species-footer">
-        <span>Collectible card</span>
-        <strong>${buddy.icon}</strong>
-      </div>
-    </article>
-  `).join("")
-
-  const cards = [...document.querySelectorAll(".species-card")]
-  let active = 0
-  function setActiveCard(index) {
-    cards.forEach((card, i) => card.classList.toggle("active", i === index))
-  }
-  if (cards.length) {
-    setActiveCard(active)
-    setInterval(() => {
-      active = (active + 1) % cards.length
-      setActiveCard(active)
-    }, 1400)
-    cards.forEach((card, index) => {
-      card.addEventListener("mouseenter", () => {
-        active = index
-        setActiveCard(active)
-      })
-    })
-  }
-}
-
-function makeChip(containerId, values, currentValue, formatter, onPick) {
-  const node = document.getElementById(containerId)
-  if (!node) return
-  node.innerHTML = values.map((value) => `
-    <button class="option-chip ${value === currentValue ? "active" : ""}" type="button" data-value="${value}">
-      ${formatter(value)}
-    </button>
-  `).join("")
-  node.querySelectorAll(".option-chip").forEach((button) => {
-    button.addEventListener("click", () => onPick(button.dataset.value))
-  })
+const heroStates = {
+  dragon: { species: 'dragon', rarity: 'legendary', eye: 'glow-dot', hat: 'wizard', shiny: false },
+  owl: { species: 'owl', rarity: 'epic', eye: 'orb', hat: 'halo', shiny: false },
+  chonk: { species: 'chonk', rarity: 'legendary', eye: 'spark', hat: 'crown', shiny: true },
 }
 
 function buildStats(seedText) {
@@ -144,99 +30,195 @@ function buildStats(seedText) {
 
 function bar(value) {
   const filled = Math.max(1, Math.round(value / 5))
-  return `${"█".repeat(filled)}${"░".repeat(20 - filled)} ${value}`
+  return `${'█'.repeat(filled)}${'░'.repeat(20 - filled)} ${value}`
+}
+
+function rarityClass(currentState) {
+  return currentState.shiny ? 'tier-shiny' : `tier-${currentState.rarity}`
+}
+
+function chipLabel(type, value) {
+  if (type === 'species') {
+    const species = speciesById[value]
+    return `${species.label}`
+  }
+  if (type === 'rarity') {
+    const rarity = rarityById[value]
+    return `${rarity.stars} ${rarity.label}`
+  }
+  if (type === 'eye') {
+    const eye = eyeById[value]
+    return `${eye.symbol} ${eye.label}`
+  }
+  const hat = hatById[value]
+  return `${hat.symbol} ${hat.label}`
+}
+
+function makeChip(containerId, values, currentValue, type, onPick) {
+  const node = document.getElementById(containerId)
+  if (!node) return
+  node.innerHTML = values.map((value) => `
+    <button class="option-chip ${value === currentValue ? 'active' : ''}" type="button" data-value="${value}">
+      ${chipLabel(type, value)}
+    </button>
+  `).join('')
+  node.querySelectorAll('.option-chip').forEach((button) => {
+    button.addEventListener('click', () => onPick(button.dataset.value))
+  })
+}
+
+function mountHeroRenders() {
+  document.querySelectorAll('[data-buddy-hero]').forEach((node, index) => {
+    const species = node.getAttribute('data-buddy-hero')
+    const heroState = heroStates[species] || defaultBuddyState
+    node.innerHTML = renderBuddySvg(heroState, { idPrefix: `hero-${species}-${index}`, variant: 'hero' })
+  })
+}
+
+function renderSpeciesGrid() {
+  const grid = document.getElementById('species-grid')
+  if (!grid) return
+
+  grid.innerHTML = buddyArtManifest.species.map((buddy, index) => `
+    <article class="species-card tier-${buddy.defaultRarity}" data-index="${index}">
+      <div class="species-foil"></div>
+      <div class="species-top">
+        <div class="species-render" data-species-render="${buddy.id}"></div>
+        <span class="species-tag">${buddy.defaultRarity}</span>
+      </div>
+      <h3>${buddy.label}</h3>
+      <p>${buddy.vibe}</p>
+      <div class="species-traits">
+        <span>${buddy.trait}</span>
+        <span>${buddy.family.replace(/-/g, ' ')}</span>
+      </div>
+      <div class="species-footer">
+        <span>Collectible card</span>
+        <strong>${rarityById[buddy.defaultRarity].stars}</strong>
+      </div>
+    </article>
+  `).join('')
+
+  grid.querySelectorAll('[data-species-render]').forEach((node, index) => {
+    const species = node.getAttribute('data-species-render')
+    const buddy = speciesById[species]
+    const eye = buddyArtManifest.eyes[index % buddyArtManifest.eyes.length].id
+    const hat = buddy.defaultRarity === 'common'
+      ? 'none'
+      : buddyArtManifest.hats[(index % (buddyArtManifest.hats.length - 1)) + 1].id
+    node.innerHTML = renderBuddySvg({
+      species,
+      rarity: buddy.defaultRarity,
+      eye,
+      hat,
+      shiny: species === 'chonk',
+    }, { idPrefix: `grid-${species}-${index}`, variant: 'card' })
+  })
+
+  const cards = [...document.querySelectorAll('.species-card')]
+  let active = 0
+  function setActiveCard(index) {
+    cards.forEach((card, i) => card.classList.toggle('active', i === index))
+  }
+  if (cards.length) {
+    setActiveCard(active)
+    setInterval(() => {
+      active = (active + 1) % cards.length
+      setActiveCard(active)
+    }, 1400)
+    cards.forEach((card, index) => {
+      card.addEventListener('mouseenter', () => {
+        active = index
+        setActiveCard(active)
+      })
+    })
+  }
 }
 
 function renderPreview() {
-  const preview = document.getElementById("cli-preview")
-  const previewMode = document.getElementById("preview-mode")
-  const previewShell = document.querySelector(".preview-shell")
-  const creature = document.getElementById("preview-creature")
-  const avatar = document.getElementById("preview-avatar")
-  const avatarIcon = document.getElementById("preview-avatar-icon")
-  const avatarName = document.getElementById("preview-avatar-name")
-  const avatarMeta = document.getElementById("preview-avatar-meta")
-  const avatarStars = document.getElementById("preview-avatar-stars")
-  const avatarTraits = document.getElementById("preview-avatar-traits")
-  const petBody = document.getElementById("preview-pet-body")
-  const petHat = document.getElementById("preview-pet-hat")
-  const petEyes = document.getElementById("preview-pet-eyes")
-  const petShine = document.getElementById("preview-pet-shine")
-  const speciesData = species.find((item) => item.name === state.species) || species[0]
-  const stats = buildStats(`${state.species}-${state.rarity}-${state.eye}-${state.hat}-${state.shiny}`)
-  const rarityLabel = `${rarityStars[state.rarity]} ${state.rarity}${state.shiny ? "  ✨ SHINY" : ""}`
-  const hatLabel = `${hatEmoji[state.hat]} ${state.hat}`
-  const seed = `${state.species}-${state.rarity}-${state.eye}-${state.hat}-${state.shiny ? "shiny" : "plain"}`
+  const currentState = normalizeBuddyState(state)
+  const species = speciesById[currentState.species]
+  const rarity = rarityById[currentState.rarity]
+  const eye = eyeById[currentState.eye]
+  const hat = hatById[currentState.hat]
+  const stats = buildStats(`${currentState.species}-${currentState.rarity}-${currentState.eye}-${currentState.hat}-${currentState.shiny}`)
+  const preview = document.getElementById('cli-preview')
+  const previewMode = document.getElementById('preview-mode')
+  const previewShell = document.querySelector('.preview-shell')
+  const previewStage = document.querySelector('[data-buddy-stage]')
+  const avatar = document.getElementById('preview-avatar')
+  const avatarRender = document.querySelector('[data-buddy-avatar]')
+  const avatarName = document.getElementById('preview-avatar-name')
+  const avatarMeta = document.getElementById('preview-avatar-meta')
+  const avatarStars = document.getElementById('preview-avatar-stars')
+  const avatarTraits = document.getElementById('preview-avatar-traits')
 
-  if (previewMode) previewMode.textContent = "web-preview"
-  if (previewShell) previewShell.className = `preview-shell tier-${speciesData.tier}`
-  if (petBody) petBody.textContent = speciesData.icon
-  if (petHat) petHat.textContent = hatEmoji[state.hat]
-  if (petEyes) petEyes.textContent = `${state.eye} ${state.eye}`
-  if (petShine) petShine.style.opacity = state.shiny ? "1" : "0"
-  if (avatar) avatar.className = `preview-avatar tier-${speciesData.tier}`
-  if (avatarIcon) avatarIcon.textContent = speciesData.icon
-  if (avatarName) avatarName.textContent = state.species
-  if (avatarMeta) avatarMeta.textContent = `${state.rarity} · ${state.hat} · ${state.shiny ? "shiny" : "plain"}`
-  if (avatarStars) avatarStars.textContent = `${rarityStars[state.rarity]}${state.shiny ? " ✨" : ""}`
+  if (previewMode) previewMode.textContent = 'web-preview'
+  if (previewShell) previewShell.className = `preview-shell ${rarityClass(currentState)}`
+  if (previewStage) previewStage.innerHTML = renderBuddySvg(currentState, { idPrefix: 'stage-preview', variant: 'stage' })
+  if (avatar) avatar.className = `preview-avatar ${rarityClass(currentState)}`
+  if (avatarRender) avatarRender.innerHTML = renderBuddySvg(currentState, { idPrefix: 'avatar-preview', variant: 'avatar' })
+  if (avatarName) avatarName.textContent = species.label
+  if (avatarMeta) avatarMeta.textContent = `${rarity.label} · ${hat.label} · ${currentState.shiny ? 'shiny' : 'standard'}`
+  if (avatarStars) avatarStars.textContent = `${rarity.stars}${currentState.shiny ? ' ✨' : ''}`
   if (avatarTraits) {
     avatarTraits.innerHTML = [
-      `<span>${state.eye} eyes</span>`,
-      `<span>${hatEmoji[state.hat]} ${state.hat}</span>`,
-      `<span>${state.shiny ? "✨ shiny" : "standard"}</span>`,
-    ].join("")
+      `<span>${eye.symbol} ${eye.label}</span>`,
+      `<span>${hat.symbol} ${hat.label}</span>`,
+      `<span>${currentState.shiny ? '✨ shiny' : 'standard'}</span>`,
+    ].join('')
   }
-  if (creature) creature.textContent = getAsciiPet(state.species, state.eye)
+
   if (!preview) return
   preview.textContent = [
-    "══════════════════════════════════════════════",
-    `${speciesData.icon}  ${state.species.toUpperCase()}`,
-    `${rarityLabel}`,
-    "──────────────────────────────────────────────",
-    `Trait  Eyes ${state.eye}   Hat ${hatLabel}`,
-    "Power",
+    '══════════════════════════════════════════════',
+    `${species.label.toUpperCase()}`,
+    `${rarity.stars} ${rarity.label}${currentState.shiny ? '  ✨ SHINY' : ''}`,
+    '──────────────────────────────────────────────',
+    `Trait  Eyes ${eye.symbol}   Hat ${hat.symbol} ${hat.label}`,
+    'Power',
     `DEBUGGING  ${bar(stats.DEBUGGING)}`,
     `PATIENCE   ${bar(stats.PATIENCE)}`,
     `CHAOS      ${bar(stats.CHAOS)}`,
     `WISDOM     ${bar(stats.WISDOM)}`,
     `SNARK      ${bar(stats.SNARK)}`,
-    "──────────────────────────────────────────────",
-    `Seed   ${seed}`,
-    "══════════════════════════════════════════════",
-  ].join("\n")
+    '──────────────────────────────────────────────',
+    `Seed   ${currentState.species}-${currentState.rarity}-${currentState.eye}-${currentState.hat}-${currentState.shiny ? 'shiny' : 'plain'}`,
+    '══════════════════════════════════════════════',
+  ].join('\n')
 }
 
 function initBuilder() {
-  makeChip("species-options", species.map((s) => s.name), state.species, (value) => {
-    const found = species.find((item) => item.name === value)
-    return `${found.icon} ${value}`
-  }, (value) => {
+  makeChip('species-options', buddyArtManifest.species.map((item) => item.id), state.species, 'species', (value) => {
     state.species = value
     initBuilder()
   })
 
-  makeChip("rarity-options", rarities, state.rarity, (value) => `${rarityStars[value]} ${value}`, (value) => {
+  makeChip('rarity-options', buddyArtManifest.rarities.map((item) => item.id), state.rarity, 'rarity', (value) => {
     state.rarity = value
-    if (value === "common") state.hat = "none"
+    if (value === 'common') state.hat = 'none'
     initBuilder()
   })
 
-  makeChip("eye-options", eyes, state.eye, (value) => value, (value) => {
+  makeChip('eye-options', buddyArtManifest.eyes.map((item) => item.id), state.eye, 'eye', (value) => {
     state.eye = value
     initBuilder()
   })
 
-  const availableHats = state.rarity === "common" ? ["none"] : hats
+  const availableHats = state.rarity === 'common'
+    ? ['none']
+    : buddyArtManifest.hats.map((item) => item.id)
   if (!availableHats.includes(state.hat)) state.hat = availableHats[0]
-  makeChip("hat-options", availableHats, state.hat, (value) => `${hatEmoji[value]} ${value}`, (value) => {
+
+  makeChip('hat-options', availableHats, state.hat, 'hat', (value) => {
     state.hat = value
     initBuilder()
   })
 
-  const shinyToggle = document.getElementById("shiny-toggle")
+  const shinyToggle = document.getElementById('shiny-toggle')
   if (shinyToggle) {
-    shinyToggle.textContent = state.shiny ? "On ✨" : "Off"
-    shinyToggle.classList.toggle("active", state.shiny)
+    shinyToggle.textContent = state.shiny ? 'On ✨' : 'Off'
+    shinyToggle.classList.toggle('active', state.shiny)
     shinyToggle.onclick = () => {
       state.shiny = !state.shiny
       initBuilder()
@@ -246,5 +228,6 @@ function initBuilder() {
   renderPreview()
 }
 
+mountHeroRenders()
 renderSpeciesGrid()
 initBuilder()

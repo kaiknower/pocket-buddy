@@ -54,7 +54,7 @@
               <span class="star">★★★★★</span>
               <span class="label">legendary</span>
             </div>
-            <div class="featured-icon">🐉</div>
+            <div class="featured-render" data-buddy-hero="dragon"></div>
             <h2>Dragon</h2>
             <p>Terminal royalty with a wizard hat and zero patience for flaky tests.</p>
           </article>
@@ -64,7 +64,7 @@
               <span class="star">★★★★</span>
               <span class="label">epic</span>
             </div>
-            <div class="featured-icon">🦉</div>
+            <div class="featured-render" data-buddy-hero="owl"></div>
             <h2>Owl</h2>
             <p>Late-night build guardian with calm eyes and suspiciously perfect wisdom.</p>
           </article>
@@ -74,7 +74,7 @@
               <span class="star">★★★★★ ✨</span>
               <span class="label">shiny</span>
             </div>
-            <div class="featured-icon">🐈</div>
+            <div class="featured-render" data-buddy-hero="chonk"></div>
             <h2>Chonk</h2>
             <p>Heavy aura. Soft attitude. Unreal levels of shiny confidence.</p>
           </article>
@@ -142,13 +142,10 @@
             </div>
             <div class="preview-pet-stage" id="preview-pet-stage">
               <div class="preview-pet-backdrop"></div>
-              <div class="preview-pet-hat" id="preview-pet-hat">🧙</div>
-              <div class="preview-pet-body" id="preview-pet-body">🐉</div>
-              <div class="preview-pet-eyes" id="preview-pet-eyes">◉</div>
-              <div class="preview-pet-shine" id="preview-pet-shine">✨</div>
+              <div class="preview-stage-render" data-buddy-stage></div>
             </div>
             <div class="preview-avatar" id="preview-avatar">
-              <div class="preview-avatar-icon" id="preview-avatar-icon">🐉</div>
+              <div class="preview-avatar-render" data-buddy-avatar></div>
               <div class="preview-avatar-copy">
                 <span class="preview-avatar-stars" id="preview-avatar-stars">★★★★★ ✨</span>
                 <strong id="preview-avatar-name">dragon</strong>
@@ -161,7 +158,6 @@
               </div>
             </div>
             <pre class="preview-terminal" id="cli-preview"></pre>
-            <pre class="preview-creature" id="preview-creature"></pre>
           </article>
         </div>
       </section>
@@ -171,7 +167,7 @@
           <p class="eyebrow">Buddy Gallery</p>
           <h2>All 18 species in one collection wall.</h2>
         </div>
-        <div class="species-grid" id="species-grid"></div>
+        <div class="species-grid" id="species-grid" data-species-render-template="gallery-card"></div>
       </section>
 
       <section class="section rarity-section" id="rarity">
@@ -271,7 +267,6 @@
       </section>
     </main>
   </div>
-
-  <script src="./script.js"></script>
+  <script type="module" src="./script.js"></script>
 </body>
 </html>

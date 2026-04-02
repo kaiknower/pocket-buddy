@@ -64,6 +64,54 @@ test('gallery opens an external web guide', async () => {
   assert.equal(gallery.url, 'https://kaiknower.github.io/pocket-buddy/')
 })
 
+test('buddy art manifest exposes 18 species, 5 rarities, and shared trait labels', async () => {
+  const { buddyArtManifest } = await import('../site/buddy-art/manifest.js')
+  assert.equal(buddyArtManifest.species.length, 18)
+  assert.deepEqual(
+    buddyArtManifest.rarities.map((item) => item.id),
+    ['common', 'uncommon', 'rare', 'epic', 'legendary'],
+  )
+  assert.equal(buddyArtManifest.hats.some((item) => item.id === 'wizard'), true)
+  assert.equal(buddyArtManifest.eyes.some((item) => item.id === 'glow-dot'), true)
+})
+
+test('every species master exposes required anchors', async () => {
+  const { speciesMasters } = await import('../site/buddy-art/species.js')
+  assert.equal(speciesMasters.length, 18)
+  for (const master of speciesMasters) {
+    assert.ok(master.headAnchor)
+    assert.ok(master.eyeLeft)
+    assert.ok(master.eyeRight)
+    assert.ok(master.bodyBounds)
+    assert.ok(master.floatOrigin)
+  }
+})
+
+test('overlay libraries cover hats, eyes, rarity, and shiny', async () => {
+  const { hatOverlays, eyeOverlays, rarityAuras, shinyOverlay } = await import('../site/buddy-art/overlays.js')
+  assert.ok(hatOverlays.wizard)
+  assert.ok(eyeOverlays['glow-dot'])
+  assert.ok(rarityAuras.legendary)
+  assert.ok(shinyOverlay)
+})
+
+test('renderer composes species, rarity, eyes, hat, and shiny into a single svg', async () => {
+  const { renderBuddySvg } = await import('../site/buddy-art/renderer.js')
+  const svg = renderBuddySvg({
+    species: 'dragon',
+    rarity: 'legendary',
+    eye: 'glow-dot',
+    hat: 'wizard',
+    shiny: true,
+  })
+
+  assert.match(svg, /<svg/)
+  assert.match(svg, /data-species="dragon"/)
+  assert.match(svg, /data-rarity="legendary"/)
+  assert.match(svg, /data-hat="wizard"/)
+  assert.match(svg, /data-shiny="true"/)
+})
+
 test('hero banner and buddy card use the enhanced display framing', async () => {
   const mod = await importFresh()
   assert.match(mod.getHeroBannerText(), /Pocket Buddy/)
@@ -90,21 +138,29 @@ test('retro search helpers expose pet-console framing', async () => {
   assert.match(mod.getResultBannerText(), /Hatch Result/)
 })
 
+test('cli metadata exports mirror the shared buddy art manifest', async () => {
+  const mod = await importFresh()
+  const { buddyArtManifest } = await import('../site/buddy-art/manifest.js')
+  assert.deepEqual(mod.SPECIES, buddyArtManifest.species.map((item) => item.id))
+  assert.deepEqual(mod.HATS, buddyArtManifest.hats.map((item) => item.id))
+  assert.deepEqual(mod.EYES, buddyArtManifest.eyes.map((item) => item.symbol))
+})
+
 test('package metadata uses pocket-buddy naming', () => {
   const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
   assert.equal(pkg.name, 'pocket-buddy')
   assert.ok(pkg.bin['pocket-buddy'])
 })
 
-test('static site entry file exists for GitHub Pages', () => {
+test('static site entry file uses renderer mount points for SVG buddy art', () => {
   const site = readFileSync(new URL('../site/index.html', import.meta.url), 'utf8')
   assert.match(site, /Pocket Buddy/)
   assert.match(site, /Buddy Gallery/)
   assert.match(site, /Build your buddy/i)
   assert.match(site, /CLI Preview/i)
-  assert.match(site, /preview-avatar/i)
-  assert.match(site, /preview-pet-stage/i)
-  assert.match(site, /preview-pet-hat/i)
-  assert.match(site, /preview-pet-eyes/i)
-  assert.match(site, /preview-creature/i)
+  assert.match(site, /data-buddy-stage/i)
+  assert.match(site, /data-buddy-avatar/i)
+  assert.match(site, /data-buddy-hero/i)
+  assert.match(site, /data-species-render/i)
+  assert.match(site, /type="module"/i)
 })

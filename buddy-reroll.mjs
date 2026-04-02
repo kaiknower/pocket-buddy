@@ -20,6 +20,7 @@ import { homedir } from 'node:os'
 import { createInterface } from 'node:readline'
 import { execSync } from 'node:child_process'
 import { pathToFileURL } from 'node:url'
+import { buddyArtManifest } from './site/buddy-art/manifest.js'
 
 // ══════════════════════════════════════════════════════════
 //  Constants
@@ -32,16 +33,12 @@ const PREF_PATH = process.env.POCKET_BUDDY_PREF_PATH || join(homedir(), '.pocket
 const MIN_CLAUDE_VERSION = '2.1.89'
 const GALLERY_URL = 'https://kaiknower.github.io/pocket-buddy/'
 
-const SPECIES = [
-  'duck', 'goose', 'blob', 'cat', 'dragon', 'octopus', 'owl',
-  'penguin', 'turtle', 'snail', 'ghost', 'axolotl', 'capybara',
-  'cactus', 'robot', 'rabbit', 'mushroom', 'chonk',
-]
-const RARITIES = ['common', 'uncommon', 'rare', 'epic', 'legendary']
+export const SPECIES = buddyArtManifest.species.map((item) => item.id)
+const RARITIES = buddyArtManifest.rarities.map((item) => item.id)
 const RARITY_WEIGHTS = { common: 60, uncommon: 25, rare: 10, epic: 4, legendary: 1 }
 const RARITY_RANK = { common: 0, uncommon: 1, rare: 2, epic: 3, legendary: 4 }
-const EYES = ['·', '✦', '×', '◉', '@', '°']
-const HATS = ['none', 'crown', 'tophat', 'propeller', 'halo', 'wizard', 'beanie', 'tinyduck']
+export const EYES = buddyArtManifest.eyes.map((item) => item.symbol)
+export const HATS = buddyArtManifest.hats.map((item) => item.id)
 const STAT_NAMES = ['DEBUGGING', 'PATIENCE', 'CHAOS', 'WISDOM', 'SNARK']
 const RARITY_FLOOR = { common: 5, uncommon: 15, rare: 25, epic: 35, legendary: 50 }
 
@@ -52,10 +49,9 @@ const SPECIES_EMOJI = {
   rabbit: '🐰', mushroom: '🍄', chonk: '🐈',
 }
 const HAT_EMOJI = {
-  none: '—', crown: '👑', tophat: '🎩', propeller: '🧢',
-  halo: '😇', wizard: '🧙', beanie: '⛑', tinyduck: '🐤',
+  ...Object.fromEntries(buddyArtManifest.hats.map((item) => [item.id, item.symbol])),
 }
-const RARITY_STARS = { common: '★', uncommon: '★★', rare: '★★★', epic: '★★★★', legendary: '★★★★★' }
+const RARITY_STARS = Object.fromEntries(buddyArtManifest.rarities.map((item) => [item.id, item.stars]))
 
 // ══════════════════════════════════════════════════════════
 //  ANSI Colors
