@@ -106,4 +106,5 @@ test('static site entry file exists for GitHub Pages', () => {
   assert.match(site, /preview-pet-stage/i)
   assert.match(site, /preview-pet-hat/i)
   assert.match(site, /preview-pet-eyes/i)
+  assert.match(site, /preview-creature/i)
 })

@@ -33,6 +33,48 @@ const state = {
   shiny: true,
 }
 
+function getAsciiPet(speciesName, eye) {
+  const e = eye || "•"
+  const art = {
+    rabbit: [
+      "   /\\   /\\\\",
+      `  <  ${e} ${e}  >`,
+      " (   ~~   )",
+      "  `-vvvv-´",
+    ],
+    cat: [
+      " /\\_/\\\\",
+      `(${e} ${e})`,
+      "(  =^= )",
+      "(\")___(\")",
+    ],
+    duck: [
+      "   __",
+      ` >( ${e} )__`,
+      "  (___/   )",
+      "      `---´",
+    ],
+    dragon: [
+      "   /\\__/\\\\",
+      `  /  ${e}  ${e}  \\\\`,
+      " <    ^^    >",
+      "  `-v____v-´",
+    ],
+    ghost: [
+      "   .-\"\"-.",
+      `  / ${e}  ${e} \\\\`,
+      "  |  ~~  |",
+      "  `-.__.-´",
+    ],
+  }
+  return (art[speciesName] || [
+    "   .-^-.",
+    `  < ${e} ${e} >`,
+    "  (  ~~ )",
+    "   `---´",
+  ]).join("\n")
+}
+
 function renderSpeciesGrid() {
   const grid = document.getElementById("species-grid")
   if (!grid) return
@@ -109,6 +151,7 @@ function renderPreview() {
   const preview = document.getElementById("cli-preview")
   const previewMode = document.getElementById("preview-mode")
   const previewShell = document.querySelector(".preview-shell")
+  const creature = document.getElementById("preview-creature")
   const avatar = document.getElementById("preview-avatar")
   const avatarIcon = document.getElementById("preview-avatar-icon")
   const avatarName = document.getElementById("preview-avatar-name")
@@ -143,6 +186,7 @@ function renderPreview() {
       `<span>${state.shiny ? "✨ shiny" : "standard"}</span>`,
     ].join("")
   }
+  if (creature) creature.textContent = getAsciiPet(state.species, state.eye)
   if (!preview) return
   preview.textContent = [
     "══════════════════════════════════════════════",

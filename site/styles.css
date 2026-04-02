@@ -656,6 +656,20 @@ h2 {
   white-space: pre-wrap;
 }
 
+.preview-creature {
+  position: relative;
+  z-index: 1;
+  margin: 14px 0 0;
+  padding: 18px 22px 8px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.06);
+  color: var(--text);
+  font: 700 17px/1.35 "Courier New", monospace;
+  white-space: pre-wrap;
+  text-align: center;
+}
+
 .species-grid {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
