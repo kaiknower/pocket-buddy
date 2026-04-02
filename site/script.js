@@ -112,6 +112,8 @@ function renderPreview() {
   const avatarIcon = document.getElementById("preview-avatar-icon")
   const avatarName = document.getElementById("preview-avatar-name")
   const avatarMeta = document.getElementById("preview-avatar-meta")
+  const avatarStars = document.getElementById("preview-avatar-stars")
+  const avatarTraits = document.getElementById("preview-avatar-traits")
   const speciesData = species.find((item) => item.name === state.species) || species[0]
   const stats = buildStats(`${state.species}-${state.rarity}-${state.eye}-${state.hat}-${state.shiny}`)
   const rarityLabel = `${rarityStars[state.rarity]} ${state.rarity}${state.shiny ? "  ✨ SHINY" : ""}`
@@ -123,6 +125,14 @@ function renderPreview() {
   if (avatarIcon) avatarIcon.textContent = speciesData.icon
   if (avatarName) avatarName.textContent = state.species
   if (avatarMeta) avatarMeta.textContent = `${state.rarity} · ${state.hat} · ${state.shiny ? "shiny" : "plain"}`
+  if (avatarStars) avatarStars.textContent = `${rarityStars[state.rarity]}${state.shiny ? " ✨" : ""}`
+  if (avatarTraits) {
+    avatarTraits.innerHTML = [
+      `<span>${state.eye} eyes</span>`,
+      `<span>${hatEmoji[state.hat]} ${state.hat}</span>`,
+      `<span>${state.shiny ? "✨ shiny" : "standard"}</span>`,
+    ].join("")
+  }
   if (!preview) return
   preview.textContent = [
     "══════════════════════════════════════════════",
