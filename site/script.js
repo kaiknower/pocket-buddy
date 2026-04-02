@@ -108,6 +108,10 @@ function bar(value) {
 function renderPreview() {
   const preview = document.getElementById("cli-preview")
   const previewMode = document.getElementById("preview-mode")
+  const avatar = document.getElementById("preview-avatar")
+  const avatarIcon = document.getElementById("preview-avatar-icon")
+  const avatarName = document.getElementById("preview-avatar-name")
+  const avatarMeta = document.getElementById("preview-avatar-meta")
   const speciesData = species.find((item) => item.name === state.species) || species[0]
   const stats = buildStats(`${state.species}-${state.rarity}-${state.eye}-${state.hat}-${state.shiny}`)
   const rarityLabel = `${rarityStars[state.rarity]} ${state.rarity}${state.shiny ? "  ✨ SHINY" : ""}`
@@ -115,6 +119,10 @@ function renderPreview() {
   const seed = `${state.species}-${state.rarity}-${state.eye}-${state.hat}-${state.shiny ? "shiny" : "plain"}`
 
   if (previewMode) previewMode.textContent = "web-preview"
+  if (avatar) avatar.className = `preview-avatar tier-${speciesData.tier}`
+  if (avatarIcon) avatarIcon.textContent = speciesData.icon
+  if (avatarName) avatarName.textContent = state.species
+  if (avatarMeta) avatarMeta.textContent = `${state.rarity} · ${state.hat} · ${state.shiny ? "shiny" : "plain"}`
   if (!preview) return
   preview.textContent = [
     "══════════════════════════════════════════════",
