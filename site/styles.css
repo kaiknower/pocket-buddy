@@ -471,6 +471,69 @@ h2 {
   margin-bottom: 16px;
 }
 
+.preview-pet-stage {
+  position: relative;
+  z-index: 1;
+  min-height: 270px;
+  margin-bottom: 16px;
+  border-radius: 28px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+  border: 1px solid rgba(255,255,255,0.08);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+
+.preview-pet-backdrop {
+  position: absolute;
+  inset: auto auto 18px 50%;
+  width: 210px;
+  height: 210px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.16), transparent 72%);
+}
+
+.preview-pet-body,
+.preview-pet-hat,
+.preview-pet-eyes,
+.preview-pet-shine {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.preview-pet-body {
+  top: 74px;
+  font-size: 110px;
+  line-height: 1;
+  z-index: 2;
+}
+
+.preview-pet-hat {
+  top: 28px;
+  font-size: 48px;
+  z-index: 3;
+}
+
+.preview-pet-eyes {
+  top: 118px;
+  font-size: 20px;
+  letter-spacing: 24px;
+  z-index: 4;
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(255,255,255,0.4);
+}
+
+.preview-pet-shine {
+  right: 22px;
+  left: auto;
+  top: 18px;
+  transform: none;
+  font-size: 34px;
+  z-index: 5;
+}
+
 .preview-avatar {
   position: relative;
   z-index: 1;
@@ -571,6 +634,13 @@ h2 {
 .preview-avatar.tier-epic { box-shadow: inset 0 0 0 1px rgba(255,147,217,0.22), 0 0 46px rgba(255,147,217,0.14), 0 18px 38px rgba(0,0,0,0.24); }
 .preview-avatar.tier-legendary { box-shadow: inset 0 0 0 1px rgba(255,214,110,0.24), 0 0 54px rgba(255,214,110,0.16), 0 18px 38px rgba(0,0,0,0.24); }
 .preview-avatar.tier-shiny { box-shadow: inset 0 0 0 1px rgba(125,239,255,0.26), 0 0 58px rgba(125,239,255,0.2), 0 18px 38px rgba(0,0,0,0.24); }
+
+.preview-shell.tier-common .preview-pet-stage { box-shadow: inset 0 0 0 1px rgba(230,237,247,0.12); }
+.preview-shell.tier-uncommon .preview-pet-stage { box-shadow: inset 0 0 0 1px rgba(157,252,127,0.18), 0 0 34px rgba(157,252,127,0.12); }
+.preview-shell.tier-rare .preview-pet-stage { box-shadow: inset 0 0 0 1px rgba(115,183,255,0.2), 0 0 42px rgba(115,183,255,0.14); }
+.preview-shell.tier-epic .preview-pet-stage { box-shadow: inset 0 0 0 1px rgba(255,147,217,0.22), 0 0 46px rgba(255,147,217,0.14); }
+.preview-shell.tier-legendary .preview-pet-stage { box-shadow: inset 0 0 0 1px rgba(255,214,110,0.24), 0 0 54px rgba(255,214,110,0.18); }
+.preview-shell.tier-shiny .preview-pet-stage { box-shadow: inset 0 0 0 1px rgba(125,239,255,0.26), 0 0 62px rgba(125,239,255,0.22); }
 
 .preview-terminal {
   position: relative;

@@ -108,12 +108,17 @@ function bar(value) {
 function renderPreview() {
   const preview = document.getElementById("cli-preview")
   const previewMode = document.getElementById("preview-mode")
+  const previewShell = document.querySelector(".preview-shell")
   const avatar = document.getElementById("preview-avatar")
   const avatarIcon = document.getElementById("preview-avatar-icon")
   const avatarName = document.getElementById("preview-avatar-name")
   const avatarMeta = document.getElementById("preview-avatar-meta")
   const avatarStars = document.getElementById("preview-avatar-stars")
   const avatarTraits = document.getElementById("preview-avatar-traits")
+  const petBody = document.getElementById("preview-pet-body")
+  const petHat = document.getElementById("preview-pet-hat")
+  const petEyes = document.getElementById("preview-pet-eyes")
+  const petShine = document.getElementById("preview-pet-shine")
   const speciesData = species.find((item) => item.name === state.species) || species[0]
   const stats = buildStats(`${state.species}-${state.rarity}-${state.eye}-${state.hat}-${state.shiny}`)
   const rarityLabel = `${rarityStars[state.rarity]} ${state.rarity}${state.shiny ? "  ✨ SHINY" : ""}`
@@ -121,6 +126,11 @@ function renderPreview() {
   const seed = `${state.species}-${state.rarity}-${state.eye}-${state.hat}-${state.shiny ? "shiny" : "plain"}`
 
   if (previewMode) previewMode.textContent = "web-preview"
+  if (previewShell) previewShell.className = `preview-shell tier-${speciesData.tier}`
+  if (petBody) petBody.textContent = speciesData.icon
+  if (petHat) petHat.textContent = hatEmoji[state.hat]
+  if (petEyes) petEyes.textContent = `${state.eye} ${state.eye}`
+  if (petShine) petShine.style.opacity = state.shiny ? "1" : "0"
   if (avatar) avatar.className = `preview-avatar tier-${speciesData.tier}`
   if (avatarIcon) avatarIcon.textContent = speciesData.icon
   if (avatarName) avatarName.textContent = state.species
