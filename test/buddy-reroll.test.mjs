@@ -164,3 +164,9 @@ test('static site entry file uses renderer mount points for SVG buddy art', () =
   assert.match(site, /data-species-render/i)
   assert.match(site, /type="module"/i)
 })
+
+test('static site busts CSS and JS caches for deploys', () => {
+  const site = readFileSync(new URL('../site/index.html', import.meta.url), 'utf8')
+  assert.match(site, /styles\.css\?v=/i)
+  assert.match(site, /script\.js\?v=/i)
+})
