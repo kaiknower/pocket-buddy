@@ -187,6 +187,16 @@ test('package metadata uses pocket-buddy naming', () => {
   assert.ok(pkg.bin['pocket-buddy'])
 })
 
+test('readme highlights the site with a top banner asset', () => {
+  const readme = readFileSync(new URL('../README.md', import.meta.url), 'utf8')
+  const banner = readFileSync(new URL('../assets/readme-banner.svg', import.meta.url), 'utf8')
+
+  assert.match(readme, /readme-banner\.svg/i)
+  assert.match(readme, /https:\/\/kaiknower\.github\.io\/pocket-buddy\//i)
+  assert.match(banner, /Pocket Buddy/)
+  assert.match(banner, /viewBox=/)
+})
+
 test('static site entry file uses renderer mount points for SVG buddy art', () => {
   const site = readFileSync(new URL('../site/index.html', import.meta.url), 'utf8')
   assert.match(site, /Pocket Buddy/)
