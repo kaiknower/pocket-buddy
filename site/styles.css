@@ -335,6 +335,13 @@ h2 {
 
 .section-head {
   margin-bottom: 20px;
+  max-width: min(100%, 760px);
+}
+
+.section-head h2 {
+  max-width: 18ch;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
 }
 
 .intro-grid,
@@ -589,11 +596,13 @@ h2 {
 .species-ascii-buddy {
   margin: 0;
   color: var(--text);
-  font: 700 14px/1.02 "Courier New", monospace;
+  font: 700 12px/1.02 "Courier New", monospace;
   white-space: pre;
   text-align: center;
   letter-spacing: -0.03em;
   text-shadow: 0 10px 22px rgba(0, 0, 0, 0.28);
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .featured-ascii-buddy.is-shiny,
@@ -867,6 +876,7 @@ h2 {
 .species-render {
   width: 100%;
   min-height: 104px;
+  overflow: hidden;
 }
 
 .species-tag {
