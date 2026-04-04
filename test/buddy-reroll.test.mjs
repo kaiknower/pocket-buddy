@@ -129,6 +129,39 @@ test('hero banner and buddy card use the enhanced display framing', async () => 
   assert.match(card, /Seed/)
 })
 
+test('shared preview data and formatter support the site preview', async () => {
+  const mod = await importFresh()
+  const preview = mod.buildSitePreviewData({
+    species: 'dragon',
+    rarity: 'legendary',
+    eye: '◉',
+    hat: 'wizard',
+    shiny: true,
+  })
+
+  assert.equal(preview.species, 'dragon')
+  assert.equal(preview.rarity, 'legendary')
+  assert.equal(preview.hat, 'wizard')
+  assert.equal(preview.shiny, true)
+  assert.equal(typeof preview.seedLabel, 'string')
+  assert.match(mod.formatBuddyCard(preview.buddy, preview.seedLabel, true, { color: false }), /DRAGON/)
+})
+
+test('plain text buddy formatter strips ansi color codes when requested', async () => {
+  const mod = await importFresh()
+  const output = mod.formatBuddyCard({
+    rarity: 'legendary',
+    species: 'dragon',
+    eye: '◉',
+    hat: 'wizard',
+    shiny: true,
+    stats: { DEBUGGING: 99, PATIENCE: 88, CHAOS: 77, WISDOM: 66, SNARK: 55 },
+  }, 'dragon-legendary', true, { color: false })
+
+  assert.match(output, /DRAGON/)
+  assert.doesNotMatch(output, /\x1b\[/)
+})
+
 test('retro search helpers expose pet-console framing', async () => {
   const mod = await importFresh()
   assert.match(mod.getSearchConsoleHeader('dragon legendary'), /Pet Scan/)
@@ -157,12 +190,28 @@ test('static site entry file uses renderer mount points for SVG buddy art', () =
   assert.match(site, /Pocket Buddy/)
   assert.match(site, /Buddy Gallery/)
   assert.match(site, /Build your buddy/i)
-  assert.match(site, /CLI Preview/i)
-  assert.match(site, /data-buddy-stage/i)
-  assert.match(site, /data-buddy-avatar/i)
+  assert.match(site, /Buddy Result/i)
+  assert.match(site, /data-buddy-result/i)
+  assert.match(site, /data-buddy-render/i)
+  assert.doesNotMatch(site, /data-buddy-stage/i)
+  assert.doesNotMatch(site, /data-buddy-avatar/i)
   assert.match(site, /data-buddy-hero/i)
   assert.match(site, /data-species-render/i)
   assert.match(site, /type="module"/i)
+})
+
+test('site script uses shared preview helpers instead of hand-built preview text', () => {
+  const script = readFileSync(new URL('../site/script.js', import.meta.url), 'utf8')
+  assert.match(script, /buildSitePreviewData/)
+  assert.match(script, /formatBuddyTranscript/)
+})
+
+test('preview styling uses unified result classes instead of legacy stage and avatar classes', () => {
+  const css = readFileSync(new URL('../site/styles.css', import.meta.url), 'utf8')
+  assert.match(css, /\.preview-result-card\b/)
+  assert.match(css, /\.preview-result-render\b/)
+  assert.doesNotMatch(css, /\.preview-pet-stage\b/)
+  assert.doesNotMatch(css, /\.preview-avatar\b/)
 })
 
 test('static site busts CSS and JS caches for deploys', () => {

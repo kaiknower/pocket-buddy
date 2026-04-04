@@ -21,6 +21,13 @@ import { createInterface } from 'node:readline'
 import { execSync } from 'node:child_process'
 import { pathToFileURL } from 'node:url'
 import { buddyArtManifest } from './site/buddy-art/manifest.js'
+import {
+  buildSitePreviewData as buildSharedSitePreviewData,
+  createBuddyTranscriptModel,
+  RARITY_STARS,
+  SPECIES_EMOJI,
+  STAT_NAMES,
+} from './site/preview-shared.js'
 
 // ══════════════════════════════════════════════════════════
 //  Constants
@@ -39,19 +46,10 @@ const RARITY_WEIGHTS = { common: 60, uncommon: 25, rare: 10, epic: 4, legendary:
 const RARITY_RANK = { common: 0, uncommon: 1, rare: 2, epic: 3, legendary: 4 }
 export const EYES = buddyArtManifest.eyes.map((item) => item.symbol)
 export const HATS = buddyArtManifest.hats.map((item) => item.id)
-const STAT_NAMES = ['DEBUGGING', 'PATIENCE', 'CHAOS', 'WISDOM', 'SNARK']
 const RARITY_FLOOR = { common: 5, uncommon: 15, rare: 25, epic: 35, legendary: 50 }
-
-const SPECIES_EMOJI = {
-  duck: '🦆', goose: '🪿', blob: '🫧', cat: '🐱', dragon: '🐉',
-  octopus: '🐙', owl: '🦉', penguin: '🐧', turtle: '🐢', snail: '🐌',
-  ghost: '👻', axolotl: '🦎', capybara: '🦫', cactus: '🌵', robot: '🤖',
-  rabbit: '🐰', mushroom: '🍄', chonk: '🐈',
-}
 const HAT_EMOJI = {
   ...Object.fromEntries(buddyArtManifest.hats.map((item) => [item.id, item.symbol])),
 }
-const RARITY_STARS = Object.fromEntries(buddyArtManifest.rarities.map((item) => [item.id, item.stars]))
 
 // ══════════════════════════════════════════════════════════
 //  ANSI Colors
@@ -399,6 +397,10 @@ function getShowcaseConfig(species, index) {
   return { species, rarity, eye, hat, shiny }
 }
 
+export function buildSitePreviewData(config = {}) {
+  return buildSharedSitePreviewData(config)
+}
+
 // ══════════════════════════════════════════════════════════
 //  Display
 // ══════════════════════════════════════════════════════════
@@ -408,22 +410,32 @@ function divider(style = '─', width = 40) {
 }
 
 function statBar(v, w=20) { const f=Math.round((v/100)*w); return `${c(v>=80?ESC.green:v>=50?ESC.yellow:v>=30?ESC.white:ESC.red,'█'.repeat(f)+'░'.repeat(w-f))} ${v}` }
-export function formatBuddyCard(b, uid, verbose=true) {
-  const lines = ['', divider('═', 46)], rC = RARITY_CLR[b.rarity]
-  lines.push(c(rC + ESC.bold, `  ${SPECIES_EMOJI[b.species] || '?'}  ${b.species.toUpperCase()}`))
-  lines.push(c(rC, `  ${RARITY_STARS[b.rarity]} ${b.rarity}`) + (b.shiny ? c(ESC.yellow + ESC.bold, '  ✨ SHINY') : ''))
-  lines.push(divider())
-  lines.push(c(ESC.dim, `  Trait  Eyes ${b.eye}   Hat ${HAT_EMOJI[b.hat]} ${b.hat}`))
-  if (verbose) {
-    lines.push(c(ESC.dim, '  Power'))
-    for (const [n, v] of Object.entries(b.stats)) lines.push(`  ${c(ESC.dim, n.padEnd(10))} ${statBar(v)}`)
-  }
-  if (uid) {
-    lines.push(divider())
-    lines.push(c(ESC.dim, `  Seed   ${uid}`))
-  }
-  lines.push(divider('═', 46), '')
-  return lines.join('\n')
+export function formatBuddyCard(b, uid, verbose = true, options = {}) {
+  const useColor = options.color ?? true
+  const lines = createBuddyTranscriptModel(b, uid, verbose).map((line) => {
+    switch (line.kind) {
+      case 'divider':
+        return useColor ? c(ESC.gray, line.text) : line.text
+      case 'dividerSoft':
+        return useColor ? c(ESC.gray, line.text) : line.text
+      case 'title':
+        return useColor ? c(RARITY_CLR[b.rarity] + ESC.bold, line.text) : line.text
+      case 'rarity': {
+        const text = line.shiny ? `${line.text}  ✨ SHINY` : line.text
+        if (!useColor) return text
+        return c(RARITY_CLR[b.rarity], line.text) + (line.shiny ? c(ESC.yellow + ESC.bold, '  ✨ SHINY') : '')
+      }
+      case 'muted':
+        return useColor ? c(ESC.dim, line.text) : line.text
+      case 'statName': {
+        if (!useColor) return line.text
+        return `  ${c(ESC.dim, line.statName.padEnd(10))} ${statBar(line.statValue)}`
+      }
+      default:
+        return line.text
+    }
+  })
+  return ['', ...lines, ''].join('\n')
 }
 function formatBuddy(b, uid, verbose=true) {
   return formatBuddyCard(b, uid, verbose)

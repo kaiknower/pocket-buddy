@@ -1,12 +1,12 @@
 import {
   buddyArtManifest,
   defaultBuddyState,
-  eyeById,
   hatById,
   normalizeBuddyState,
   rarityById,
   speciesById,
 } from './buddy-art/manifest.js'
+import { buildSitePreviewData, formatBuddyTranscript } from './preview-shared.js'
 import { renderBuddySvg } from './buddy-art/renderer.js'
 
 const state = { ...defaultBuddyState }
@@ -15,22 +15,6 @@ const heroStates = {
   dragon: { species: 'dragon', rarity: 'legendary', eye: 'glow-dot', hat: 'wizard', shiny: false },
   owl: { species: 'owl', rarity: 'epic', eye: 'orb', hat: 'halo', shiny: false },
   chonk: { species: 'chonk', rarity: 'legendary', eye: 'spark', hat: 'crown', shiny: true },
-}
-
-function buildStats(seedText) {
-  const base = [...seedText].reduce((sum, char) => sum + char.charCodeAt(0), 0)
-  return {
-    DEBUGGING: 45 + (base % 40),
-    PATIENCE: 25 + ((base * 3) % 55),
-    CHAOS: 20 + ((base * 5) % 60),
-    WISDOM: 30 + ((base * 7) % 55),
-    SNARK: 15 + ((base * 11) % 70),
-  }
-}
-
-function bar(value) {
-  const filled = Math.max(1, Math.round(value / 5))
-  return `${'█'.repeat(filled)}${'░'.repeat(20 - filled)} ${value}`
 }
 
 function rarityClass(currentState) {
@@ -137,55 +121,24 @@ function renderSpeciesGrid() {
 
 function renderPreview() {
   const currentState = normalizeBuddyState(state)
-  const species = speciesById[currentState.species]
-  const rarity = rarityById[currentState.rarity]
-  const eye = eyeById[currentState.eye]
-  const hat = hatById[currentState.hat]
-  const stats = buildStats(`${currentState.species}-${currentState.rarity}-${currentState.eye}-${currentState.hat}-${currentState.shiny}`)
+  const previewData = buildSitePreviewData(currentState)
   const preview = document.getElementById('cli-preview')
   const previewMode = document.getElementById('preview-mode')
   const previewShell = document.querySelector('.preview-shell')
-  const previewStage = document.querySelector('[data-buddy-stage]')
-  const avatar = document.getElementById('preview-avatar')
-  const avatarRender = document.querySelector('[data-buddy-avatar]')
-  const avatarName = document.getElementById('preview-avatar-name')
-  const avatarMeta = document.getElementById('preview-avatar-meta')
-  const avatarStars = document.getElementById('preview-avatar-stars')
-  const avatarTraits = document.getElementById('preview-avatar-traits')
+  const previewRender = document.querySelector('[data-buddy-render]')
+  const previewName = document.getElementById('preview-name')
+  const previewState = document.getElementById('preview-state')
 
-  if (previewMode) previewMode.textContent = 'web-preview'
+  if (previewMode) previewMode.textContent = 'claude-code'
   if (previewShell) previewShell.className = `preview-shell ${rarityClass(currentState)}`
-  if (previewStage) previewStage.innerHTML = renderBuddySvg(currentState, { idPrefix: 'stage-preview', variant: 'stage' })
-  if (avatar) avatar.className = `preview-avatar ${rarityClass(currentState)}`
-  if (avatarRender) avatarRender.innerHTML = renderBuddySvg(currentState, { idPrefix: 'avatar-preview', variant: 'avatar' })
-  if (avatarName) avatarName.textContent = species.label
-  if (avatarMeta) avatarMeta.textContent = `${rarity.label} · ${hat.label} · ${currentState.shiny ? 'shiny' : 'standard'}`
-  if (avatarStars) avatarStars.textContent = `${rarity.stars}${currentState.shiny ? ' ✨' : ''}`
-  if (avatarTraits) {
-    avatarTraits.innerHTML = [
-      `<span>${eye.symbol} ${eye.label}</span>`,
-      `<span>${hat.symbol} ${hat.label}</span>`,
-      `<span>${currentState.shiny ? '✨ shiny' : 'standard'}</span>`,
-    ].join('')
+  if (previewRender) previewRender.innerHTML = renderBuddySvg(previewData.renderState, { idPrefix: 'result-preview', variant: 'stage' })
+  if (previewName) previewName.textContent = previewData.speciesLabel
+  if (previewState) {
+    previewState.textContent = `${previewData.rarityStars} ${previewData.rarityLabel} · ${previewData.hatSymbol} ${previewData.hatLabel}${previewData.shiny ? ' · ✨ shiny' : ''}`
   }
 
   if (!preview) return
-  preview.textContent = [
-    '══════════════════════════════════════════════',
-    `${species.label.toUpperCase()}`,
-    `${rarity.stars} ${rarity.label}${currentState.shiny ? '  ✨ SHINY' : ''}`,
-    '──────────────────────────────────────────────',
-    `Trait  Eyes ${eye.symbol}   Hat ${hat.symbol} ${hat.label}`,
-    'Power',
-    `DEBUGGING  ${bar(stats.DEBUGGING)}`,
-    `PATIENCE   ${bar(stats.PATIENCE)}`,
-    `CHAOS      ${bar(stats.CHAOS)}`,
-    `WISDOM     ${bar(stats.WISDOM)}`,
-    `SNARK      ${bar(stats.SNARK)}`,
-    '──────────────────────────────────────────────',
-    `Seed   ${currentState.species}-${currentState.rarity}-${currentState.eye}-${currentState.hat}-${currentState.shiny ? 'shiny' : 'plain'}`,
-    '══════════════════════════════════════════════',
-  ].join('\n')
+  preview.textContent = formatBuddyTranscript(previewData.buddy, previewData.seedLabel, true)
 }
 
 function initBuilder() {

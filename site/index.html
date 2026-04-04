@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css?v=svg-art-1">
+  <link rel="stylesheet" href="./styles.css?v=svg-art-2">
 </head>
 <body>
   <div class="page-shell">
@@ -137,24 +137,15 @@
 
           <article class="preview-shell">
             <div class="preview-head">
-              <span>CLI Preview</span>
-              <span id="preview-mode">targeted-hunt</span>
+              <span>Buddy Result</span>
+              <span id="preview-mode">claude-code</span>
             </div>
-            <div class="preview-pet-stage" id="preview-pet-stage">
-              <div class="preview-pet-backdrop"></div>
-              <div class="preview-stage-render" data-buddy-stage></div>
-            </div>
-            <div class="preview-avatar" id="preview-avatar">
-              <div class="preview-avatar-render" data-buddy-avatar></div>
-              <div class="preview-avatar-copy">
-                <span class="preview-avatar-stars" id="preview-avatar-stars">★★★★★ ✨</span>
-                <strong id="preview-avatar-name">dragon</strong>
-                <span id="preview-avatar-meta">legendary · wizard · shiny</span>
-                <div class="preview-avatar-traits" id="preview-avatar-traits">
-                  <span>◉ eyes</span>
-                  <span>🧙 wizard</span>
-                  <span>✨ shiny</span>
-                </div>
+            <div class="preview-result-card" data-buddy-result>
+              <div class="preview-result-render" data-buddy-render></div>
+              <div class="preview-result-copy">
+                <span class="preview-result-kicker">Applied Companion</span>
+                <strong id="preview-name">Dragon</strong>
+                <span id="preview-state">★★★★★ legendary · 🧙 wizard · ✨ shiny</span>
               </div>
             </div>
             <pre class="preview-terminal" id="cli-preview"></pre>
@@ -267,6 +258,6 @@
       </section>
     </main>
   </div>
-  <script type="module" src="./script.js?v=svg-art-1"></script>
+  <script type="module" src="./script.js?v=svg-art-2"></script>
 </body>
 </html>
