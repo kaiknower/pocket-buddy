@@ -1,12 +1,16 @@
+<p align="center">
+  <img src="./assets/readme-banner.svg" alt="Pocket Buddy" width="100%">
+</p>
+
 # Pocket Buddy
 
 > Customise your Claude Code `/buddy` with a faster picker, cleaner CLI, and one-command setup.
 
 Pocket Buddy is a terminal tool for finding and applying the Claude Code buddy you actually want. Pick species, rarity, eyes, hat, and shiny traits, then write the result straight into your local Claude config.
 
-Public gallery:
+Website:
 
-`https://kaiknower.github.io/pocket-buddy/`
+[https://kaiknower.github.io/pocket-buddy/](https://kaiknower.github.io/pocket-buddy/)
 
 ## Buddy Preview
 
