@@ -202,6 +202,7 @@ test('static site entry file uses renderer mount points for SVG buddy art', () =
 
 test('site script uses shared preview helpers instead of hand-built preview text', () => {
   const script = readFileSync(new URL('../site/script.js', import.meta.url), 'utf8')
+  assert.match(script, /import\s*\{[\s\S]*eyeById[\s\S]*\}\s*from '\.\/buddy-art\/manifest\.js'/)
   assert.match(script, /buildSitePreviewData/)
   assert.match(script, /formatBuddyTranscript/)
 })

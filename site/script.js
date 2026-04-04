@@ -1,6 +1,7 @@
 import {
   buddyArtManifest,
   defaultBuddyState,
+  eyeById,
   hatById,
   normalizeBuddyState,
   rarityById,
