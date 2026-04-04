@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css?v=svg-art-2">
+  <link rel="stylesheet" href="./styles.css?v=svg-art-3">
 </head>
 <body>
   <div class="page-shell">
@@ -106,7 +106,7 @@
       <section class="section showcase-section" id="showcase">
         <div class="section-head">
           <p class="eyebrow">Preview Builder</p>
-          <h2>Build your buddy on the web, then preview the exact CLI-style result.</h2>
+          <h2>Build your buddy on the web, then preview it in a spawn-style companion card.</h2>
         </div>
         <div class="builder-grid">
           <article class="builder-panel">
@@ -137,18 +137,31 @@
 
           <article class="preview-shell">
             <div class="preview-head">
-              <span>Buddy Result</span>
-              <span id="preview-mode">claude-code</span>
+              <span>Buddy Preview</span>
+              <span id="preview-mode">spawn-style</span>
             </div>
             <div class="preview-result-card" data-buddy-result>
+              <div class="preview-result-top">
+                <div class="preview-result-title">
+                  <strong>Your Buddy</strong>
+                  <span>Spawn-style preview</span>
+                </div>
+                <span class="preview-result-badge" id="preview-rarity-badge">★★★★★ legendary</span>
+              </div>
               <div class="preview-result-render" data-buddy-render></div>
               <div class="preview-result-copy">
-                <span class="preview-result-kicker">Applied Companion</span>
-                <strong id="preview-name">Dragon</strong>
-                <span id="preview-state">★★★★★ legendary · 🧙 wizard · ✨ shiny</span>
+                <strong id="preview-name">Nova</strong>
+                <span id="preview-species">dragon</span>
+                <span class="preview-shiny-badge" id="preview-shiny">✨ Shiny</span>
               </div>
+              <p class="preview-personality" id="preview-personality">"Finds the weird bug and makes it feel obvious."</p>
+              <div class="preview-stats" id="preview-stats"></div>
+              <div class="preview-traits" id="preview-traits"></div>
             </div>
-            <pre class="preview-terminal" id="cli-preview"></pre>
+            <details class="preview-transcript-panel">
+              <summary>View transcript</summary>
+              <pre class="preview-terminal" id="cli-preview"></pre>
+            </details>
           </article>
         </div>
       </section>
@@ -258,6 +271,6 @@
       </section>
     </main>
   </div>
-  <script type="module" src="./script.js?v=svg-art-2"></script>
+  <script type="module" src="./script.js?v=svg-art-3"></script>
 </body>
 </html>

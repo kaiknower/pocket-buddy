@@ -128,14 +128,41 @@ function renderPreview() {
   const previewShell = document.querySelector('.preview-shell')
   const previewRender = document.querySelector('[data-buddy-render]')
   const previewName = document.getElementById('preview-name')
-  const previewState = document.getElementById('preview-state')
+  const previewSpecies = document.getElementById('preview-species')
+  const previewPersonality = document.getElementById('preview-personality')
+  const previewStats = document.getElementById('preview-stats')
+  const previewTraits = document.getElementById('preview-traits')
+  const previewShiny = document.getElementById('preview-shiny')
+  const previewRarityBadge = document.getElementById('preview-rarity-badge')
 
-  if (previewMode) previewMode.textContent = 'claude-code'
+  if (previewMode) previewMode.textContent = 'spawn-style'
   if (previewShell) previewShell.className = `preview-shell ${rarityClass(currentState)}`
   if (previewRender) previewRender.innerHTML = renderBuddySvg(previewData.renderState, { idPrefix: 'result-preview', variant: 'stage' })
-  if (previewName) previewName.textContent = previewData.speciesLabel
-  if (previewState) {
-    previewState.textContent = `${previewData.rarityStars} ${previewData.rarityLabel} · ${previewData.hatSymbol} ${previewData.hatLabel}${previewData.shiny ? ' · ✨ shiny' : ''}`
+  if (previewName) previewName.textContent = previewData.name
+  if (previewSpecies) previewSpecies.textContent = previewData.speciesLabel
+  if (previewPersonality) previewPersonality.textContent = `"${previewData.personality}"`
+  if (previewRarityBadge) previewRarityBadge.textContent = `${previewData.rarityStars} ${previewData.rarityLabel}`
+  if (previewShiny) {
+    previewShiny.hidden = !previewData.shiny
+  }
+  if (previewStats) {
+    previewStats.innerHTML = Object.entries(previewData.stats).map(([label, value]) => `
+      <div class="preview-stat-row">
+        <div class="preview-stat-copy">
+          <span>${label}</span>
+          <strong>${value}</strong>
+        </div>
+        <div class="preview-stat-bar">
+          <span style="width: ${value}%"></span>
+        </div>
+      </div>
+    `).join('')
+  }
+  if (previewTraits) {
+    previewTraits.innerHTML = [
+      `<div class="preview-trait-pill"><span>Eyes</span><strong>${previewData.eye}</strong></div>`,
+      `<div class="preview-trait-pill"><span>Hat</span><strong>${previewData.hatLabel}</strong></div>`,
+    ].join('')
   }
 
   if (!preview) return

@@ -23,6 +23,32 @@ export const RARITY_STARS = Object.fromEntries(
   buddyArtManifest.rarities.map((item) => [item.id, item.stars]),
 )
 
+const PREVIEW_NAMES = [
+  'Pico',
+  'Mallow',
+  'Nib',
+  'Drift',
+  'Luma',
+  'Bramble',
+  'Pebble',
+  'Nova',
+  'Miso',
+  'Fable',
+  'Tinker',
+  'Glint',
+]
+
+const PREVIEW_PERSONALITIES = [
+  'Leaves tiny comments in all the right places.',
+  'Treats flaky tests like a personal insult.',
+  'Keeps builds calm even when the room is not.',
+  'Collects edge cases like shiny trinkets.',
+  'Quietly judges messy diffs, then fixes them.',
+  'Talks big, ships clean, naps immediately after.',
+  'Finds the weird bug and makes it feel obvious.',
+  'Acts mysterious until the deploy turns green.',
+]
+
 export function normalizePreviewState(partial = {}) {
   const incoming = { ...defaultBuddyState, ...partial }
   if (eyeBySymbol[incoming.eye]) incoming.eye = eyeBySymbol[incoming.eye].id
@@ -50,6 +76,9 @@ export function buildSitePreviewData(config = {}) {
   const hat = hatById[renderState.hat]
   const seedLabel = `${renderState.species}-${renderState.rarity}-${renderState.eye}-${renderState.hat}-${renderState.shiny ? 'shiny' : 'plain'}`
   const stats = buildPreviewStats(seedLabel)
+  const soulSeed = [...seedLabel].reduce((sum, char) => sum + char.charCodeAt(0), 0)
+  const name = PREVIEW_NAMES[soulSeed % PREVIEW_NAMES.length]
+  const personality = PREVIEW_PERSONALITIES[(soulSeed * 7) % PREVIEW_PERSONALITIES.length]
   const buddy = {
     species: renderState.species,
     rarity: renderState.rarity,
@@ -72,6 +101,8 @@ export function buildSitePreviewData(config = {}) {
     hatSymbol: hat.symbol,
     hatLabel: hat.label,
     shiny: renderState.shiny,
+    name,
+    personality,
     stats,
     seedLabel,
     buddy,
