@@ -7,10 +7,14 @@ import {
   rarityById,
   speciesById,
 } from './buddy-art/manifest.js'
+import { renderBuddyAsciiPreview } from './buddy-preview-ascii.js'
 import { buildSitePreviewData, formatBuddyTranscript } from './preview-shared.js'
 import { renderBuddySvg } from './buddy-art/renderer.js'
 
 const state = { ...defaultBuddyState }
+let previewFrame = 0
+let previewAnimationId = null
+let previewAnimationState = null
 
 const heroStates = {
   dragon: { species: 'dragon', rarity: 'legendary', eye: 'glow-dot', hat: 'wizard', shiny: false },
@@ -137,7 +141,18 @@ function renderPreview() {
 
   if (previewMode) previewMode.textContent = 'spawn-style'
   if (previewShell) previewShell.className = `preview-shell ${rarityClass(currentState)}`
-  if (previewRender) previewRender.innerHTML = renderBuddySvg(previewData.renderState, { idPrefix: 'result-preview', variant: 'stage' })
+  previewAnimationState = previewData
+  if (previewRender) {
+    previewRender.innerHTML = ''
+    const art = document.createElement('pre')
+    art.className = `preview-ascii-buddy ${previewData.shiny ? 'is-shiny' : ''}`
+    art.textContent = renderBuddyAsciiPreview({
+      species: previewData.species,
+      eye: previewData.eye,
+      hat: previewData.hat,
+    }, previewFrame)
+    previewRender.appendChild(art)
+  }
   if (previewName) previewName.textContent = previewData.name
   if (previewSpecies) previewSpecies.textContent = previewData.speciesLabel
   if (previewPersonality) previewPersonality.textContent = `"${previewData.personality}"`
@@ -167,6 +182,23 @@ function renderPreview() {
 
   if (!preview) return
   preview.textContent = formatBuddyTranscript(previewData.buddy, previewData.seedLabel, true)
+  ensurePreviewAnimation()
+}
+
+function ensurePreviewAnimation() {
+  if (previewAnimationId || typeof window === 'undefined') return
+  previewAnimationId = window.setInterval(() => {
+    const previewRender = document.querySelector('[data-buddy-render]')
+    if (!previewRender || !previewAnimationState) return
+    previewFrame = (previewFrame + 1) % 3
+    const art = previewRender.querySelector('.preview-ascii-buddy')
+    if (!art) return
+    art.textContent = renderBuddyAsciiPreview({
+      species: previewAnimationState.species,
+      eye: previewAnimationState.eye,
+      hat: previewAnimationState.hat,
+    }, previewFrame)
+  }, 500)
 }
 
 function initBuilder() {

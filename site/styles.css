@@ -551,6 +551,9 @@ h2 {
 .preview-result-render {
   width: min(100%, 320px);
   margin: 0 auto;
+  min-height: 168px;
+  display: grid;
+  place-items: center;
 }
 
 .buddy-svg {
@@ -563,6 +566,23 @@ h2 {
 .buddy-svg--stage,
 .preview-result-render .buddy-svg {
   filter: drop-shadow(0 22px 36px rgba(0, 0, 0, 0.28));
+}
+
+.preview-ascii-buddy {
+  margin: 0;
+  color: var(--text);
+  font: 700 18px/1.05 "Courier New", monospace;
+  white-space: pre;
+  text-align: center;
+  letter-spacing: -0.02em;
+  text-shadow: 0 12px 28px rgba(0, 0, 0, 0.32);
+}
+
+.preview-ascii-buddy.is-shiny {
+  color: #fff5c6;
+  text-shadow:
+    0 0 20px rgba(255, 214, 110, 0.24),
+    0 12px 28px rgba(0, 0, 0, 0.32);
 }
 
 .featured-render .buddy-svg,
