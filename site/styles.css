@@ -184,10 +184,7 @@ h2 {
   min-height: 0;
   isolation: isolate;
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-  grid-template-areas:
-    "dragon owl"
-    "dragon chonk";
+  grid-template-columns: 1fr;
   gap: 18px;
   align-content: center;
 }
@@ -257,9 +254,9 @@ h2 {
   background: radial-gradient(circle, rgba(255,255,255,0.14), transparent 70%);
 }
 
-.featured-dragon { grid-area: dragon; min-height: 430px; }
-.featured-owl { grid-area: owl; min-height: 206px; }
-.featured-chonk { grid-area: chonk; min-height: 206px; }
+.featured-dragon { min-height: 250px; }
+.featured-owl { min-height: 250px; }
+.featured-chonk { min-height: 250px; }
 
 .featured-head {
   display: flex;
@@ -280,6 +277,9 @@ h2 {
 
 .featured-render {
   width: min(100%, 250px);
+  min-height: 120px;
+  display: grid;
+  place-items: center;
 }
 
 .featured-card h2 {
@@ -585,9 +585,23 @@ h2 {
     0 12px 28px rgba(0, 0, 0, 0.32);
 }
 
-.featured-render .buddy-svg,
-.species-render .buddy-svg {
-  filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.22));
+.featured-ascii-buddy,
+.species-ascii-buddy {
+  margin: 0;
+  color: var(--text);
+  font: 700 14px/1.02 "Courier New", monospace;
+  white-space: pre;
+  text-align: center;
+  letter-spacing: -0.03em;
+  text-shadow: 0 10px 22px rgba(0, 0, 0, 0.28);
+}
+
+.featured-ascii-buddy.is-shiny,
+.species-ascii-buddy.is-shiny {
+  color: #fff5c6;
+  text-shadow:
+    0 0 16px rgba(255, 214, 110, 0.22),
+    0 10px 22px rgba(0, 0, 0, 0.28);
 }
 
 .buddy-actor {
@@ -850,6 +864,11 @@ h2 {
   place-items: center;
 }
 
+.species-render {
+  width: 100%;
+  min-height: 104px;
+}
+
 .species-tag {
   font-size: 12px;
   color: var(--muted);
@@ -1056,13 +1075,6 @@ code {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .hero-stage {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "dragon"
-      "owl"
-      "chonk";
-  }
 }
 
 @media (max-width: 740px) {

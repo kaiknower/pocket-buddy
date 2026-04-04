@@ -9,7 +9,6 @@ import {
 } from './buddy-art/manifest.js'
 import { renderBuddyAsciiPreview } from './buddy-preview-ascii.js'
 import { buildSitePreviewData, formatBuddyTranscript } from './preview-shared.js'
-import { renderBuddySvg } from './buddy-art/renderer.js'
 
 const state = { ...defaultBuddyState }
 let previewFrame = 0
@@ -60,7 +59,14 @@ function mountHeroRenders() {
   document.querySelectorAll('[data-buddy-hero]').forEach((node, index) => {
     const species = node.getAttribute('data-buddy-hero')
     const heroState = heroStates[species] || defaultBuddyState
-    node.innerHTML = renderBuddySvg(heroState, { idPrefix: `hero-${species}-${index}`, variant: 'hero' })
+    const art = document.createElement('pre')
+    art.className = `featured-ascii-buddy ${heroState.shiny ? 'is-shiny' : ''}`
+    art.textContent = renderBuddyAsciiPreview({
+      species: heroState.species,
+      eye: eyeById[heroState.eye].symbol,
+      hat: heroState.hat,
+    }, index)
+    node.replaceChildren(art)
   })
 }
 
@@ -95,13 +101,14 @@ function renderSpeciesGrid() {
     const hat = buddy.defaultRarity === 'common'
       ? 'none'
       : buddyArtManifest.hats[(index % (buddyArtManifest.hats.length - 1)) + 1].id
-    node.innerHTML = renderBuddySvg({
+    const art = document.createElement('pre')
+    art.className = `species-ascii-buddy ${species === 'chonk' ? 'is-shiny' : ''}`
+    art.textContent = renderBuddyAsciiPreview({
       species,
-      rarity: buddy.defaultRarity,
-      eye,
+      eye: eyeById[eye].symbol,
       hat,
-      shiny: species === 'chonk',
-    }, { idPrefix: `grid-${species}-${index}`, variant: 'card' })
+    }, index)
+    node.replaceChildren(art)
   })
 
   const cards = [...document.querySelectorAll('.species-card')]
