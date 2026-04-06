@@ -7,6 +7,7 @@
     "pocket-buddy": "./buddy-reroll.mjs"
   },
   "scripts": {
+    "test": "node --test",
     "start": "node buddy-reroll.mjs",
     "search": "node buddy-reroll.mjs search",
     "check": "node buddy-reroll.mjs check",

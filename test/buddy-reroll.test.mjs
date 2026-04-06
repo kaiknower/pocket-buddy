@@ -197,6 +197,11 @@ test('readme highlights the site with a top banner asset', () => {
   assert.match(banner, /viewBox=/)
 })
 
+test('package metadata exposes npm test through the node test runner', () => {
+  const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
+  assert.equal(pkg.scripts.test, 'node --test')
+})
+
 test('static site entry file uses renderer mount points for SVG buddy art', () => {
   const site = readFileSync(new URL('../site/index.html', import.meta.url), 'utf8')
   assert.match(site, /Pocket Buddy/)
