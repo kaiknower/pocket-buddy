@@ -84,7 +84,7 @@ bun buddy-reroll.mjs
 
 ```text
 ══════════════════════════════════════════
-Pocket Buddy v2.0.0
+Pocket Buddy v2.2.3
 Fast pet picking for Claude Code /buddy
 ══════════════════════════════════════════
 Runtime: Bun ✓ | Hash: wyhash (native install)

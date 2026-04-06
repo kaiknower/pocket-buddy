@@ -207,6 +207,16 @@ test('package publish whitelist includes runtime site modules', () => {
   assert.equal(pkg.files.includes('site'), true)
 })
 
+test('cli banner and readme sample stay in sync with package version', async () => {
+  const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
+  const mod = await importFresh()
+  const readme = readFileSync(new URL('../README.md', import.meta.url), 'utf8')
+
+  assert.equal(mod.getPocketBuddyVersion(), pkg.version)
+  assert.match(mod.getHeroBannerText(), new RegExp(`v${pkg.version.replaceAll('.', '\\.')}`))
+  assert.match(readme, new RegExp(`Pocket Buddy v${pkg.version.replaceAll('.', '\\.')}`))
+})
+
 test('static site entry file uses renderer mount points for SVG buddy art', () => {
   const site = readFileSync(new URL('../site/index.html', import.meta.url), 'utf8')
   assert.match(site, /Pocket Buddy/)

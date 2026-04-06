@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Pocket Buddy v2.0.0
+ * Pocket Buddy
  *
  * Interactive pet reroller for Claude Code /buddy.
  * Just run it — no args needed. Guided step by step.
@@ -33,7 +33,15 @@ import {
 //  Constants
 // ══════════════════════════════════════════════════════════
 
-const VERSION = '2.0.0'
+function loadPackageVersion() {
+  try {
+    const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8'))
+    if (typeof pkg.version === 'string' && pkg.version) return pkg.version
+  } catch {}
+  return '0.0.0'
+}
+
+const VERSION = loadPackageVersion()
 const SALT = 'friend-2026-401'
 const CONFIG_PATH = join(homedir(), '.claude.json')
 const PREF_PATH = process.env.POCKET_BUDDY_PREF_PATH || join(homedir(), '.pocket-buddy.json')
@@ -452,6 +460,11 @@ export function getHeroBannerText() {
     '',
   ].join('\n')
 }
+
+export function getPocketBuddyVersion() {
+  return VERSION
+}
+
 function banner() {
   console.log(getHeroBannerText())
 }
