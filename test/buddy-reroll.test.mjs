@@ -230,6 +230,11 @@ test('help text lists the public cli commands', async () => {
   assert.match(help, /pocket-buddy patch/i)
 })
 
+test('search result apply hint uses the package command', async () => {
+  const mod = await importFresh()
+  assert.equal(mod.getApplyCommandHint('seed-123'), '  pocket-buddy apply seed-123\n')
+})
+
 test('static site entry file uses renderer mount points for SVG buddy art', () => {
   const site = readFileSync(new URL('../site/index.html', import.meta.url), 'utf8')
   assert.match(site, /Pocket Buddy/)

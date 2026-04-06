@@ -542,6 +542,10 @@ export function getHelpText() {
   ].map((line) => c(ESC.dim, line)).join('\n')
 }
 
+export function getApplyCommandHint(userId) {
+  return `  pocket-buddy apply ${userId}\n`
+}
+
 function openExternalUrl(url) {
   try {
     if (process.platform === 'darwin') execSync(`open "${url}"`, { stdio: 'ignore' })
@@ -1157,7 +1161,7 @@ function cliSearch(cr, opts) {
   if (opts.json) { console.log(JSON.stringify(results.map(r => ({ userId: r.uid, buddy: r.buddy, attempts: r.attempts })), null, 2)); return }
   console.log(c(ESC.bold + ESC.green, `\n  ════════════════════════════════════\n  ${t('s_best')}\n  ════════════════════════════════════`))
   console.log(formatBuddy(best.buddy, best.uid))
-  console.log(c(ESC.cyan, `  node buddy-reroll.mjs apply ${best.uid}\n`))
+  console.log(c(ESC.cyan, getApplyCommandHint(best.uid)))
 }
 
 // ══════════════════════════════════════════════════════════
