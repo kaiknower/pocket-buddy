@@ -202,6 +202,11 @@ test('package metadata exposes npm test through the node test runner', () => {
   assert.equal(pkg.scripts.test, 'node --test')
 })
 
+test('package publish whitelist includes runtime site modules', () => {
+  const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
+  assert.equal(pkg.files.includes('site'), true)
+})
+
 test('static site entry file uses renderer mount points for SVG buddy art', () => {
   const site = readFileSync(new URL('../site/index.html', import.meta.url), 'utf8')
   assert.match(site, /Pocket Buddy/)

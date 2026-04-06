@@ -30,6 +30,8 @@
   },
   "files": [
     "buddy-reroll.mjs",
+    "site",
+    "assets",
     "LICENSE",
     "README.md"
   ],
