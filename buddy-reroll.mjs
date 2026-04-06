@@ -6,7 +6,7 @@
  * Interactive pet reroller for Claude Code /buddy.
  * Just run it — no args needed. Guided step by step.
  *
- * Interactive:  npx claude-buddy-reroll
+ * Interactive:  npx pocket-buddy
  * CLI mode:     node buddy-reroll.mjs search --species duck --rarity legendary
  *
  * Cross-platform: Node.js (v16+) / Bun. Bilingual: EN / 中文.

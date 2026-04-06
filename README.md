@@ -74,6 +74,14 @@ curl -fsSL https://raw.githubusercontent.com/kaiknower/pocket-buddy/main/run.sh 
 irm https://raw.githubusercontent.com/kaiknower/pocket-buddy/main/run.ps1 | iex
 ```
 
+## Package Run
+
+```bash
+npx pocket-buddy
+npm install -g pocket-buddy
+pocket-buddy
+```
+
 ## Local Run
 
 ```bash

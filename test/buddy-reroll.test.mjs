@@ -235,6 +235,15 @@ test('search result apply hint uses the package command', async () => {
   assert.equal(mod.getApplyCommandHint('seed-123'), '  pocket-buddy apply seed-123\n')
 })
 
+test('readme documents package usage and source avoids the legacy package name', () => {
+  const readme = readFileSync(new URL('../README.md', import.meta.url), 'utf8')
+  const source = readFileSync(new URL('../buddy-reroll.mjs', import.meta.url), 'utf8')
+
+  assert.match(readme, /npx pocket-buddy/i)
+  assert.match(readme, /npm install -g pocket-buddy/i)
+  assert.doesNotMatch(source, /claude-buddy-reroll/i)
+})
+
 test('static site entry file uses renderer mount points for SVG buddy art', () => {
   const site = readFileSync(new URL('../site/index.html', import.meta.url), 'utf8')
   assert.match(site, /Pocket Buddy/)
