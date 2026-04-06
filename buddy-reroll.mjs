@@ -526,6 +526,22 @@ export function getGalleryLink() {
   return { label: 'Buddy Gallery', url: GALLERY_URL }
 }
 
+export function getHelpText() {
+  return [
+    '  pocket-buddy                → Start choosing a buddy',
+    '  pocket-buddy search ...     → Search with CLI filters',
+    '  pocket-buddy check [userID] → Show the current or provided buddy',
+    '  pocket-buddy apply <userID> → Save a buddy into Claude config',
+    '  pocket-buddy gallery        → Print the species gallery',
+    '  pocket-buddy selftest       → Run hash self-checks',
+    '  pocket-buddy lang           → Switch language',
+    '  pocket-buddy patch          → Patch full override mode',
+    '',
+    '  --species/-s  --rarity/-r  --eye/-e  --hat  --shiny  --limit/-l  --json  --lang <en|zh>',
+    '',
+  ].map((line) => c(ESC.dim, line)).join('\n')
+}
+
 function openExternalUrl(url) {
   try {
     if (process.platform === 'darwin') execSync(`open "${url}"`, { stdio: 'ignore' })
@@ -1174,9 +1190,7 @@ async function main() {
       if (Object.keys(args.filters).length > 0) cliSearch(args.filters, args.options)
       else {
         banner()
-        console.log(c(ESC.dim, '  pocket-buddy                → Start choosing a buddy'))
-        console.log(c(ESC.dim, '  pocket-buddy search ...     → CLI mode\n'))
-        console.log(c(ESC.dim, '  --species/-s  --rarity/-r  --eye/-e  --hat  --shiny  --limit/-l  --json  --lang <en|zh>\n'))
+        console.log(getHelpText())
       }
   }
 }

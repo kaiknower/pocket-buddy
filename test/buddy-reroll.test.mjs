@@ -217,6 +217,19 @@ test('cli banner and readme sample stay in sync with package version', async () 
   assert.match(readme, new RegExp(`Pocket Buddy v${pkg.version.replaceAll('.', '\\.')}`))
 })
 
+test('help text lists the public cli commands', async () => {
+  const mod = await importFresh()
+  const help = mod.getHelpText()
+
+  assert.match(help, /pocket-buddy search/i)
+  assert.match(help, /pocket-buddy check/i)
+  assert.match(help, /pocket-buddy apply <userID>/i)
+  assert.match(help, /pocket-buddy gallery/i)
+  assert.match(help, /pocket-buddy selftest/i)
+  assert.match(help, /pocket-buddy lang/i)
+  assert.match(help, /pocket-buddy patch/i)
+})
+
 test('static site entry file uses renderer mount points for SVG buddy art', () => {
   const site = readFileSync(new URL('../site/index.html', import.meta.url), 'utf8')
   assert.match(site, /Pocket Buddy/)
