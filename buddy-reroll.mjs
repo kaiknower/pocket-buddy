@@ -243,10 +243,34 @@ async function select(title, items, allowSkip = false) {
   return idx >= 0 && idx < items.length ? idx : (allowSkip ? -1 : 0)
 }
 
+function normalizeBooleanInput(answer, defaultValue = false, allowBlank = true) {
+  const raw = (answer || '').trim().toLowerCase()
+  if (!raw) return defaultValue
+  if (raw === 'y' || raw === 'yes' || raw === '1') return true
+  if (raw === 'n' || raw === 'no' || raw === '0') return false
+  return allowBlank ? defaultValue : false
+}
+
+function parseBoolInput(answer, defaultValue = false) {
+  return normalizeBooleanInput(answer, defaultValue, true)
+}
+
+function parseTriStateBoolInput(answer) {
+  const raw = (answer || '').trim().toLowerCase()
+  if (raw === 'y' || raw === 'yes' || raw === '1') return true
+  if (raw === 'n' || raw === 'no' || raw === '0') return false
+  return null
+}
+
+function parsePositiveInt(answer, fallback, min = 1) {
+  const n = Number.parseInt(answer, 10)
+  if (!Number.isFinite(n) || Number.isNaN(n) || n < min) return fallback
+  return n
+}
+
 async function confirm(question, defaultYes = true) {
   const ans = await ask(`  ${question} `)
-  if (ans === '') return defaultYes
-  return ans.toLowerCase().startsWith('y')
+  return normalizeBooleanInput(ans, defaultYes, true)
 }
 
 // ══════════════════════════════════════════════════════════
@@ -601,7 +625,7 @@ function matchesCriteria(buddy, cr) {
   if(cr.eye&&buddy.eye!==cr.eye)return false;if(cr.hat&&buddy.hat!==cr.hat)return false
   if(cr.shiny!=null&&buddy.shiny!==cr.shiny)return false;return true
 }
-function doSearch(criteria, limit=5_000_000) {
+function doSearch(criteria, limit=DEFAULT_SEARCH_LIMIT) {
   const results=[],start=Date.now();let best=null
   for(let i=0;i<limit;i++){
     const uid=randomBytes(32).toString('hex'),buddy=rollBuddy(uid)
@@ -617,7 +641,7 @@ function doSearch(criteria, limit=5_000_000) {
         break
       }
     }
-    if(i>0&&i%500_000===0&&IS_TTY){const el=(Date.now()-start)/1000;console.log(getSearchProgressLine(i, el))}
+    if(i>0&&i%SEARCH_PROGRESS_INTERVAL===0&&IS_TTY){const el=(Date.now()-start)/1000;console.log(getSearchProgressLine(i, el))}
   }
   console.log(c(ESC.dim,`\n  ${t('s_done',limit.toLocaleString(),((Date.now()-start)/1000).toFixed(2))}`))
   return results
@@ -630,7 +654,7 @@ function doSearch(criteria, limit=5_000_000) {
 async function interactiveSearch(criteriaOverride = null) {
   // 1. Species
   const criteria = criteriaOverride ? { ...criteriaOverride } : {}
-  let limit = 5_000_000
+  let limit = DEFAULT_SEARCH_LIMIT
 
   if (!criteriaOverride) {
     const spItems = SPECIES.map(s => `${SPECIES_EMOJI[s]}  ${s}`)
@@ -650,16 +674,16 @@ async function interactiveSearch(criteriaOverride = null) {
     const hat = hatIdx >= 0 ? HATS[hatIdx] : null
 
     const shinyAns = await ask(`\n  ${t('si_shiny')} `)
-    const shiny = shinyAns.toLowerCase().startsWith('y') ? true : null
+    const shiny = parseTriStateBoolInput(shinyAns)
 
     const limAns = await ask(`  ${t('si_limit')} `)
-    limit = parseInt(limAns) || 5_000_000
+    limit = parsePositiveInt(limAns, DEFAULT_SEARCH_LIMIT)
 
     if (species) criteria.species = species
     if (rarity) criteria.rarity = rarity
     if (eye) criteria.eye = eye
     if (hat) criteria.hat = hat
-    if (shiny) criteria.shiny = true
+    if (shiny !== null) criteria.shiny = shiny
   }
 
   if (Object.keys(criteria).length === 0) {
@@ -926,14 +950,14 @@ async function interactivePatch() {
 
   // Shiny
   const shinyAns = await ask(`  ${t('patch_shiny_q')} `)
-  const shiny = shinyAns.toLowerCase() === 'y' ? true : shinyAns.toLowerCase() === 'n' ? false : stored.shiny
+  const shiny = parseTriStateBoolInput(shinyAns) ?? stored.shiny
 
   // Stats
   const stats = { ...(stored.stats || {}) }
   for (const sn of STAT_NAMES) {
     const cur = stats[sn] ?? '?'
     const ans = await ask(`  ${t('patch_stat', `${sn} [${cur}]`)} `)
-    if (ans !== '') { const v = parseInt(ans); if (!isNaN(v)) stats[sn] = Math.max(0, Math.min(100, v)) }
+    if (ans !== '') { const v = parsePositiveInt(ans, null, 0); if (v !== null) stats[sn] = Math.max(0, Math.min(100, v)) }
   }
 
   // Name + personality
@@ -1110,7 +1134,7 @@ function parseArgs(argv) {
       case '--hat': args.filters.hat = n; i++; break
       case '--shiny': args.filters.shiny = true; break
       case '--not-shiny': args.filters.shiny = false; break
-      case '--limit': case '-l': args.options.limit = parseInt(n); i++; break
+      case '--limit': case '-l': args.options.limit = parsePositiveInt(n, null); i++; break
       case '--json': args.options.json = true; break
       case '--lang': i++; break
       default: if (!a.startsWith('-') && (args.command === 'apply' || args.command === 'check')) args.options.userId = a
@@ -1124,7 +1148,7 @@ function cliSearch(cr, opts) {
   if (!cr.species && !cr.rarity && !cr.eye && !cr.hat && cr.shiny == null) { console.log(c(ESC.red, '  Need at least one filter.\n')); return }
   if (!IS_BUN) console.log(c(ESC.yellow, `  ${t('s_node_warn')}\n`))
   const parts = []; if (cr.shiny) parts.push('✨'); if (cr.rarity) parts.push(cr.rarity); if (cr.species) parts.push(`${SPECIES_EMOJI[cr.species]} ${cr.species}`); if (cr.eye) parts.push(`eye:${cr.eye}`); if (cr.hat) parts.push(`hat:${cr.hat}`)
-  const limit = opts.limit || 5_000_000
+  const limit = opts.limit || DEFAULT_SEARCH_LIMIT
   console.log(c(ESC.bold, `  ${t('s_target')} ${parts.join(' ')}\n`))
   const results = doSearch(cr, limit)
   if (!results.length) { console.log(c(ESC.red, `\n  ${t('s_no_match')}\n`)); return }
