@@ -572,9 +572,13 @@ export function getGalleryLink() {
 
 function openExternalUrl(url) {
   try {
-    if (process.platform === 'darwin') execSync(`open "${url}"`, { stdio: 'ignore' })
-    else if (process.platform === 'win32') execSync(`cmd /c start "" "${url}"`, { stdio: 'ignore' })
-    else execSync(`xdg-open "${url}"`, { stdio: 'ignore' })
+    if (process.platform === 'darwin') {
+      execSync(`open "${url}"`, { stdio: 'ignore' })
+    } else if (process.platform === 'win32') {
+      execSync(`cmd /c start "" "${url}"`, { stdio: 'ignore' })
+    } else {
+      execSync(`xdg-open "${url}"`, { stdio: 'ignore' })
+    }
     return true
   } catch {
     return false
@@ -1172,9 +1176,15 @@ async function interactiveSettings() {
 
 function parseArgs(argv) {
   const args = { command: null, filters: {}, options: {} }
-  const cmds = ['search', 'check', 'apply', 'gallery', 'selftest', 'help', 'lang', 'patch']
+  const cmds = ['search', 'check', 'apply', 'gallery', 'selftest', 'help', 'lang', 'patch', 'version']
   let i = 0
-  for (; i < argv.length; i++) { const a = argv[i]; if (a === '--lang') { i++; continue }; if (!a.startsWith('-') && cmds.includes(a)) { args.command = a; i++; break } }
+  for (; i < argv.length; i++) {
+    const a = argv[i]
+    if (a === '-h' || a === '--help') { args.command = 'help'; continue }
+    if (a === '-V' || a === '--version') { args.command = 'version'; continue }
+    if (a === '--lang') { i++; continue }
+    if (!a.startsWith('-') && cmds.includes(a)) { args.command = a; i++; break }
+  }
   for (; i < argv.length; i++) {
     const a = argv[i], n = argv[i + 1]
     switch (a) {
@@ -1215,6 +1225,10 @@ function cliSearch(cr, opts) {
   console.log(c(ESC.cyan, `  node buddy-reroll.mjs apply ${best.uid}\n`))
 }
 
+function showVersion() {
+  console.log(c(ESC.dim, `  pocket-buddy v${VERSION}`))
+}
+
 // ══════════════════════════════════════════════════════════
 //  Main
 // ══════════════════════════════════════════════════════════
@@ -1242,13 +1256,17 @@ async function main() {
     case 'selftest': banner(); interactiveSelftest(); break
     case 'patch': await interactivePatch(); break
     case 'lang': await pickLang(); break
+    case 'version': showVersion(); break
     case 'help': default:
       if (Object.keys(args.filters).length > 0) cliSearch(args.filters, args.options)
       else {
         banner()
         console.log(c(ESC.dim, '  pocket-buddy                → Start choosing a buddy'))
         console.log(c(ESC.dim, '  pocket-buddy search ...     → CLI mode\n'))
-        console.log(c(ESC.dim, '  --species/-s  --rarity/-r  --eye/-e  --hat  --shiny  --limit/-l  --json  --lang <en|zh>\n'))
+        console.log(c(ESC.dim, '  -h, --help                 → Show help'))
+        console.log(c(ESC.dim, '  -V, --version              → Show version'))
+        console.log(c(ESC.dim, '  --hash <fnv1a|wyhash>      → Force hash mode\n'))
+        console.log(c(ESC.dim, '  --species/-s  --rarity/-r  --eye/-e  --hat  --shiny  --not-shiny  --limit/-l  --json  --lang <en|zh>\n'))
       }
   }
 }
