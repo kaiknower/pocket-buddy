@@ -33,6 +33,13 @@ test('loadLang defaults to English when no preference exists', async () => {
   }
 })
 
+test('normalizeHashMode supports only known override values', async () => {
+  const mod = await importFresh()
+  assert.equal(mod.normalizeHashMode('fnv1a'), 'fnv1a')
+  assert.equal(mod.normalizeHashMode('wyhash'), 'wyhash')
+  assert.equal(mod.normalizeHashMode('random'), null)
+})
+
 test('saved language preference overrides the default', async () => {
   const dir = mkdtempSync(join(tmpdir(), 'pocket-buddy-pref-'))
   const prefPath = join(dir, 'pref.json')
