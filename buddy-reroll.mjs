@@ -58,6 +58,12 @@ const RARITY_RANK = { common: 0, uncommon: 1, rare: 2, epic: 3, legendary: 4 }
 export const EYES = buddyArtManifest.eyes.map((item) => item.symbol)
 export const HATS = buddyArtManifest.hats.map((item) => item.id)
 const RARITY_FLOOR = { common: 5, uncommon: 15, rare: 25, epic: 35, legendary: 50 }
+const SEARCH_VALUE_SETS = {
+  species: new Set(SPECIES),
+  rarity: new Set(RARITIES),
+  eye: new Set(EYES),
+  hat: new Set(HATS),
+}
 const HAT_EMOJI = {
   ...Object.fromEntries(buddyArtManifest.hats.map((item) => [item.id, item.symbol])),
 }
@@ -658,6 +664,27 @@ function matchesCriteria(buddy, cr) {
   if(cr.eye&&buddy.eye!==cr.eye)return false;if(cr.hat&&buddy.hat!==cr.hat)return false
   if(cr.shiny!=null&&buddy.shiny!==cr.shiny)return false;return true
 }
+
+export function normalizeSearchCriteria(filters = {}) {
+  const normalized = {}
+  const invalid = []
+  const input = { ...filters }
+  for (const key of CRITERIA_KEYS) {
+    if (!(key in input)) continue
+    const value = input[key]
+    if (key === 'shiny') {
+      if (typeof value === 'boolean') normalized.shiny = value
+      else if (value != null) invalid.push(`--${key} expects boolean`)
+      continue
+    }
+    if (typeof value !== 'string' || !SEARCH_VALUE_SETS[key].has(value)) {
+      invalid.push(value == null ? `--${key} is required` : `--${key} invalid value: ${value}`)
+      continue
+    }
+    normalized[key] = value
+  }
+  return { normalized, invalid }
+}
 function doSearch(criteria, limit=DEFAULT_SEARCH_LIMIT) {
   const results=[],start=Date.now();let best=null
   for(let i=0;i<limit;i++){
@@ -1178,12 +1205,17 @@ function parseArgs(argv) {
 
 function cliSearch(cr, opts) {
   banner()
-  if (!cr.species && !cr.rarity && !cr.eye && !cr.hat && cr.shiny == null) { console.log(c(ESC.red, '  Need at least one filter.\n')); return }
+  const { normalized, invalid } = normalizeSearchCriteria(cr)
+  if (invalid.length) {
+    console.log(c(ESC.red, `  Invalid filter options. ${invalid.join('; ')}`))
+    return
+  }
+  if (!normalized.species && !normalized.rarity && !normalized.eye && !normalized.hat && normalized.shiny == null) { console.log(c(ESC.red, '  Need at least one filter.\n')); return }
   if (!IS_BUN) console.log(c(ESC.yellow, `  ${t('s_node_warn')}\n`))
-  const parts = []; if (cr.shiny) parts.push('✨'); if (cr.rarity) parts.push(cr.rarity); if (cr.species) parts.push(`${SPECIES_EMOJI[cr.species]} ${cr.species}`); if (cr.eye) parts.push(`eye:${cr.eye}`); if (cr.hat) parts.push(`hat:${cr.hat}`)
+  const parts = []; if (normalized.shiny) parts.push('✨'); if (normalized.rarity) parts.push(normalized.rarity); if (normalized.species) parts.push(`${SPECIES_EMOJI[normalized.species]} ${normalized.species}`); if (normalized.eye) parts.push(`eye:${normalized.eye}`); if (normalized.hat) parts.push(`hat:${normalized.hat}`)
   const limit = opts.limit || DEFAULT_SEARCH_LIMIT
   console.log(c(ESC.bold, `  ${t('s_target')} ${parts.join(' ')}\n`))
-  const results = doSearch(cr, limit)
+  const results = doSearch(normalized, limit)
   if (!results.length) { console.log(c(ESC.red, `\n  ${t('s_no_match')}\n`)); return }
   const best = results[results.length - 1]
   if (opts.json) { console.log(JSON.stringify(results.map(r => ({ userId: r.uid, buddy: r.buddy, attempts: r.attempts })), null, 2)); return }

@@ -181,6 +181,29 @@ test('cli metadata exports mirror the shared buddy art manifest', async () => {
   assert.deepEqual(mod.EYES, buddyArtManifest.eyes.map((item) => item.symbol))
 })
 
+test('normalizeSearchCriteria filters and validates user inputs', async () => {
+  const mod = await importFresh()
+  const valid = mod.normalizeSearchCriteria({
+    species: 'dragon',
+    rarity: 'legendary',
+    eye: '◉',
+    hat: 'wizard',
+    shiny: false,
+  })
+  assert.equal(valid.invalid.length, 0)
+  assert.equal(valid.normalized.species, 'dragon')
+  assert.equal(valid.normalized.rarity, 'legendary')
+  assert.equal(valid.normalized.shiny, false)
+
+  const invalid = mod.normalizeSearchCriteria({
+    species: 'invalid-species',
+    rarity: 'ghost',
+    shiny: 'yes',
+  })
+  assert.equal(invalid.invalid.length > 0, true)
+  assert.equal(Object.keys(invalid.normalized).length, 0)
+})
+
 test('package metadata uses pocket-buddy naming', () => {
   const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
   assert.equal(pkg.name, 'pocket-buddy')
