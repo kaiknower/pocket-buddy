@@ -274,6 +274,21 @@ function parsePositiveInt(answer, fallback, min = 1) {
   return n
 }
 
+export function normalizeHashMode(value) {
+  switch ((value || '').toLowerCase()) {
+    case 'fnv':
+    case 'fnv1a':
+    case 'fnv-1a':
+      return 'fnv1a'
+    case 'wyhash':
+    case 'bun':
+    case 'native':
+      return 'wyhash'
+    default:
+      return null
+  }
+}
+
 async function confirm(question, defaultYes = true) {
   const ans = await ask(`  ${question} `)
   return normalizeBooleanInput(ans, defaultYes, true)
@@ -289,15 +304,24 @@ export function loadLang() {
     const v = (process.argv[idx + 1] || '').toLowerCase()
     return (v === 'zh' || v === 'cn') ? 'zh' : 'en'
   }
+  return loadPreference().lang || 'en'
+}
+
+function loadPreference() {
   try {
     const d = JSON.parse(readFileSync(PREF_PATH, 'utf8'))
-    if (d.lang === 'zh' || d.lang === 'en') return d.lang
+    if (d && typeof d === 'object') return d
   } catch {}
-  return 'en'
+  return {}
+}
+
+function savePreference(update) {
+  const current = loadPreference()
+  writeFileSync(PREF_PATH, JSON.stringify({ ...current, ...update }, null, 2), 'utf8')
 }
 
 function saveLang(lang) {
-  writeFileSync(PREF_PATH, JSON.stringify({ lang }, null, 2), 'utf8')
+  savePreference({ lang })
 }
 
 async function pickLang() {
@@ -358,14 +382,9 @@ function fnv1a(s) { let h=2166136261; for(let i=0;i<s.length;i++){h^=s.charCodeA
 // npm install: JS at npm root -g/@anthropic-ai/claude-code/cli.js
 let HASH_MODE = 'auto' // 'wyhash' | 'fnv1a' | 'auto'
 
-function detectClaudeInstall() {
-  // Check --hash flag override
-  const hashIdx = process.argv.indexOf('--hash')
-  if (hashIdx !== -1) {
-    const v = (process.argv[hashIdx + 1] || '').toLowerCase()
-    if (v === 'fnv' || v === 'fnv1a') return 'fnv1a'
-    if (v === 'wyhash' || v === 'bun') return 'wyhash'
-  }
+function detectClaudeInstall(hashModeOverride) {
+  const hashMode = normalizeHashMode(hashModeOverride)
+  if (hashMode) return hashMode
   // Check saved preference
   try {
     const d = JSON.parse(readFileSync(PREF_PATH, 'utf8'))
@@ -1166,6 +1185,7 @@ function parseArgs(argv) {
       case '--shiny': args.filters.shiny = true; break
       case '--not-shiny': args.filters.shiny = false; break
       case '--limit': case '-l': args.options.limit = parsePositiveInt(n, null); i++; break
+      case '--hash': args.options.hashMode = normalizeHashMode(n); i++; break
       case '--json': args.options.json = true; break
       case '--lang': i++; break
       default: if (!a.startsWith('-') && (args.command === 'apply' || args.command === 'check')) args.options.userId = a
@@ -1207,7 +1227,8 @@ async function main() {
   L = lang
 
   // Detect hash mode
-  HASH_MODE = detectClaudeInstall()
+  HASH_MODE = detectClaudeInstall(args.options.hashMode)
+  if (args.options.hashMode) savePreference({ hashMode: args.options.hashMode })
 
   // No arguments → interactive mode
   if (!hasCmd) { await interactiveMode(); return }
