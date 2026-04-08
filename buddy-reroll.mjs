@@ -349,6 +349,10 @@ function wyhash(key, seed = 0n) {
   return _wymix((a^WYP[0]^BigInt(len))&M64,(b^WYP[1])&M64)
 }
 
+function randomSeed() {
+  return randomBytes(RANDOM_BYTES_LEN).toString('hex')
+}
+
 // ══════════════════════════════════════════════════════════
 //  Hash / PRNG / Roll
 // ══════════════════════════════════════════════════════════
@@ -688,7 +692,7 @@ export function normalizeSearchCriteria(filters = {}) {
 function doSearch(criteria, limit=DEFAULT_SEARCH_LIMIT) {
   const results=[],start=Date.now();let best=null
   for(let i=0;i<limit;i++){
-    const uid=randomBytes(32).toString('hex'),buddy=rollBuddy(uid)
+    const uid=randomSeed(),buddy=rollBuddy(uid)
     if(matchesCriteria(buddy,criteria)){
       if(!criteria.rarity){
         if(!best||RARITY_RANK[buddy.rarity]>RARITY_RANK[best.buddy.rarity]){
@@ -776,7 +780,7 @@ async function interactiveSearch(criteriaOverride = null) {
 }
 
 async function interactiveRandomRoll() {
-  const uid = randomBytes(32).toString('hex')
+  const uid = randomSeed()
   const buddy = rollBuddy(uid)
   console.log(getSearchConsoleHeader('official random roll'))
   console.log(getSearchProgressLine(1, 0))
@@ -819,7 +823,7 @@ function interactiveWebGallery() {
 
 function interactiveSelftest() {
   console.log(c(ESC.bold, `\n  ${t('t_title')}\n`))
-  const tests = ['hello', 'test-user-id' + SALT, randomBytes(32).toString('hex') + SALT]
+  const tests = ['hello', 'test-user-id' + SALT, randomSeed() + SALT]
   let ok = true
   for (const s of tests) {
     const js = Number(wyhash(Buffer.from(s, 'utf8')) & 0xffffffffn)
