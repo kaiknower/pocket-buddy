@@ -39,6 +39,9 @@ const CONFIG_PATH = join(homedir(), '.claude.json')
 const PREF_PATH = process.env.POCKET_BUDDY_PREF_PATH || join(homedir(), '.pocket-buddy.json')
 const MIN_CLAUDE_VERSION = '2.1.89'
 const GALLERY_URL = 'https://kaiknower.github.io/pocket-buddy/'
+const DEFAULT_SEARCH_LIMIT = 5_000_000
+const SEARCH_PROGRESS_INTERVAL = 500_000
+const RANDOM_BYTES_LEN = 32
 
 export const SPECIES = buddyArtManifest.species.map((item) => item.id)
 const RARITIES = buddyArtManifest.rarities.map((item) => item.id)
@@ -50,6 +53,7 @@ const RARITY_FLOOR = { common: 5, uncommon: 15, rare: 25, epic: 35, legendary: 5
 const HAT_EMOJI = {
   ...Object.fromEntries(buddyArtManifest.hats.map((item) => [item.id, item.symbol])),
 }
+const CRITERIA_KEYS = ['species', 'rarity', 'eye', 'hat', 'shiny']
 
 // ══════════════════════════════════════════════════════════
 //  ANSI Colors
