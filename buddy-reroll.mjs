@@ -1219,7 +1219,7 @@ async function interactiveSettings() {
 // ══════════════════════════════════════════════════════════
 
 export function parseCliArgs(argv) {
-  const args = { command: null, filters: {}, options: {} }
+  const args = { command: null, filters: {}, options: {}, errors: [] }
   const cmds = ['search', 'check', 'apply', 'gallery', 'selftest', 'help', 'lang', 'patch', 'version']
   let i = 0
   for (; i < argv.length; i++) {
@@ -1239,7 +1239,13 @@ export function parseCliArgs(argv) {
       case '--shiny': args.filters.shiny = true; break
       case '--not-shiny': args.filters.shiny = false; break
       case '--limit': case '-l': args.options.limit = parsePositiveInt(n, null); i++; break
-      case '--hash': args.options.hashMode = normalizeHashMode(n); i++; break
+      case '--hash': {
+        const hashMode = normalizeHashMode(n)
+        if (hashMode) args.options.hashMode = hashMode
+        else args.errors.push(`Invalid --hash value: ${n}`)
+        i++
+        break
+      }
       case '--json': args.options.json = true; break
       case '--lang': i++; break
       default: if (!a.startsWith('-') && (args.command === 'apply' || args.command === 'check')) args.options.userId = a
@@ -1282,6 +1288,12 @@ async function main() {
   const hasCmd = args.command || Object.keys(args.filters).length > 0
 
   L = lang
+
+  if (args.errors.length) {
+    banner()
+    console.log(c(ESC.red, `  ${args.errors.join('\n  ')}\n`))
+    return
+  }
 
   // Detect hash mode
   HASH_MODE = detectClaudeInstall(args.options.hashMode)

@@ -313,6 +313,14 @@ test('parseCliArgs gives help and version flags command priority', async () => {
   assert.equal(mod.parseCliArgs(['--version', 'search']).command, 'version')
 })
 
+test('parseCliArgs reports invalid hash mode values', async () => {
+  const mod = await importFresh()
+  const parsed = mod.parseCliArgs(['search', '--hash', 'bad-hash'])
+
+  assert.deepEqual(parsed.errors, ['Invalid --hash value: bad-hash'])
+  assert.equal(parsed.options.hashMode, undefined)
+})
+
 test('search result apply hint uses the package command', async () => {
   const mod = await importFresh()
   assert.equal(mod.getApplyCommandHint('seed-123'), '  pocket-buddy apply seed-123\n')
