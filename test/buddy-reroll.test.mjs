@@ -260,6 +260,14 @@ test('help text lists the public cli commands', async () => {
   assert.match(help, /pocket-buddy patch/i)
 })
 
+test('help text documents negative shiny and explicit no-hat filters', async () => {
+  const mod = await importFresh()
+  const help = mod.getHelpText()
+
+  assert.match(help, /--not-shiny/)
+  assert.match(help, /--hat <id\|none>/)
+})
+
 test('search result apply hint uses the package command', async () => {
   const mod = await importFresh()
   assert.equal(mod.getApplyCommandHint('seed-123'), '  pocket-buddy apply seed-123\n')

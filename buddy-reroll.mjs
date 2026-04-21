@@ -597,7 +597,7 @@ export function getHelpText() {
     '  -h, --help                 → Show help',
     '  -V, --version              → Show version',
     '  --hash <fnv1a|wyhash>      → Force hash mode',
-    '  --species/-s  --rarity/-r  --eye/-e  --hat  --shiny  --limit/-l  --json  --lang <en|zh>',
+    '  --species/-s  --rarity/-r  --eye/-e  --hat <id|none>  --shiny  --not-shiny  --limit/-l  --json  --lang <en|zh>',
     '',
   ].map((line) => c(ESC.dim, line)).join('\n')
 }
