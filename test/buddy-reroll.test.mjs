@@ -294,6 +294,13 @@ test('parseCliArgs handles help, version, and negative shiny flags', async () =>
   )
 })
 
+test('parseCliArgs gives help and version flags command priority', async () => {
+  const mod = await importFresh()
+
+  assert.equal(mod.parseCliArgs(['--help', 'search']).command, 'help')
+  assert.equal(mod.parseCliArgs(['--version', 'search']).command, 'version')
+})
+
 test('search result apply hint uses the package command', async () => {
   const mod = await importFresh()
   assert.equal(mod.getApplyCommandHint('seed-123'), '  pocket-buddy apply seed-123\n')

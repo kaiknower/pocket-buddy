@@ -1220,8 +1220,8 @@ export function parseCliArgs(argv) {
   let i = 0
   for (; i < argv.length; i++) {
     const a = argv[i]
-    if (a === '-h' || a === '--help') { args.command = 'help'; continue }
-    if (a === '-V' || a === '--version') { args.command = 'version'; continue }
+    if (a === '-h' || a === '--help') { args.command = 'help'; i++; break }
+    if (a === '-V' || a === '--version') { args.command = 'version'; i++; break }
     if (a === '--lang') { i++; continue }
     if (!a.startsWith('-') && cmds.includes(a)) { args.command = a; i++; break }
   }
