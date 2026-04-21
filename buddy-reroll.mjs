@@ -715,6 +715,18 @@ export function normalizeSearchCriteria(filters = {}) {
   }
   return { normalized, invalid }
 }
+
+export function getSearchTargetText(criteria = {}) {
+  const parts = []
+  if (criteria.shiny === true) parts.push('shiny')
+  if (criteria.shiny === false) parts.push('not shiny')
+  if (criteria.rarity) parts.push(criteria.rarity)
+  if (criteria.species) parts.push(`${SPECIES_EMOJI[criteria.species]} ${criteria.species}`)
+  if (criteria.eye) parts.push(`eye:${criteria.eye}`)
+  if (criteria.hat) parts.push(`hat:${criteria.hat}`)
+  return parts.join(' ')
+}
+
 function doSearch(criteria, limit=DEFAULT_SEARCH_LIMIT) {
   const results=[],start=Date.now();let best=null
   for(let i=0;i<limit;i++){
@@ -780,15 +792,7 @@ async function interactiveSearch(criteriaOverride = null) {
     criteria.rarity = 'legendary' // default: find any legendary
   }
 
-  // Build display
-  const parts = []
-  if (criteria.shiny) parts.push('✨')
-  if (criteria.rarity) parts.push(criteria.rarity)
-  if (criteria.species) parts.push(`${SPECIES_EMOJI[criteria.species]} ${criteria.species}`)
-  if (criteria.eye) parts.push(`eye:${criteria.eye}`)
-  if (criteria.hat) parts.push(`hat:${criteria.hat}`)
-
-  console.log(getSearchConsoleHeader(parts.join(' ')))
+  console.log(getSearchConsoleHeader(getSearchTargetText(criteria)))
   if (!IS_BUN) console.log(c(ESC.yellow, `  ${t('s_node_warn')}\n`))
 
   const results = doSearch(criteria, limit)
@@ -1249,9 +1253,8 @@ function cliSearch(cr, opts) {
   }
   if (!normalized.species && !normalized.rarity && !normalized.eye && !normalized.hat && normalized.shiny == null) { console.log(c(ESC.red, '  Need at least one filter.\n')); return }
   if (!IS_BUN) console.log(c(ESC.yellow, `  ${t('s_node_warn')}\n`))
-  const parts = []; if (normalized.shiny) parts.push('✨'); if (normalized.rarity) parts.push(normalized.rarity); if (normalized.species) parts.push(`${SPECIES_EMOJI[normalized.species]} ${normalized.species}`); if (normalized.eye) parts.push(`eye:${normalized.eye}`); if (normalized.hat) parts.push(`hat:${normalized.hat}`)
   const limit = opts.limit || DEFAULT_SEARCH_LIMIT
-  console.log(c(ESC.bold, `  ${t('s_target')} ${parts.join(' ')}\n`))
+  console.log(c(ESC.bold, `  ${t('s_target')} ${getSearchTargetText(normalized)}\n`))
   const results = doSearch(normalized, limit)
   if (!results.length) { console.log(c(ESC.red, `\n  ${t('s_no_match')}\n`)); return }
   const best = results[results.length - 1]

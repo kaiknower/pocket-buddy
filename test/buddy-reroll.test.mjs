@@ -211,6 +211,21 @@ test('normalizeSearchCriteria filters and validates user inputs', async () => {
   assert.equal(Object.keys(invalid.normalized).length, 0)
 })
 
+test('getSearchTargetText includes negative shiny and explicit no-hat filters', async () => {
+  const mod = await importFresh()
+  const target = mod.getSearchTargetText({
+    species: 'dragon',
+    rarity: 'legendary',
+    hat: 'none',
+    shiny: false,
+  })
+
+  assert.match(target, /dragon/)
+  assert.match(target, /legendary/)
+  assert.match(target, /hat:none/)
+  assert.match(target, /not shiny/)
+})
+
 test('package metadata uses pocket-buddy naming', () => {
   const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
   assert.equal(pkg.name, 'pocket-buddy')
