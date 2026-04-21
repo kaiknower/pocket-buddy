@@ -1214,7 +1214,7 @@ async function interactiveSettings() {
 //  CLI Mode (backward compat)
 // ══════════════════════════════════════════════════════════
 
-function parseArgs(argv) {
+export function parseCliArgs(argv) {
   const args = { command: null, filters: {}, options: {} }
   const cmds = ['search', 'check', 'apply', 'gallery', 'selftest', 'help', 'lang', 'patch', 'version']
   let i = 0
@@ -1274,7 +1274,7 @@ function showVersion() {
 
 async function main() {
   const lang = loadLang()
-  const args = parseArgs(process.argv.slice(2))
+  const args = parseCliArgs(process.argv.slice(2))
   const hasCmd = args.command || Object.keys(args.filters).length > 0
 
   L = lang

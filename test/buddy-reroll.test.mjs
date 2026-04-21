@@ -283,6 +283,17 @@ test('help text documents negative shiny and explicit no-hat filters', async () 
   assert.match(help, /--hat <id\|none>/)
 })
 
+test('parseCliArgs handles help, version, and negative shiny flags', async () => {
+  const mod = await importFresh()
+
+  assert.equal(mod.parseCliArgs(['--help']).command, 'help')
+  assert.equal(mod.parseCliArgs(['--version']).command, 'version')
+  assert.deepEqual(
+    mod.parseCliArgs(['search', '--species', 'dragon', '--not-shiny']).filters,
+    { species: 'dragon', shiny: false },
+  )
+})
+
 test('search result apply hint uses the package command', async () => {
   const mod = await importFresh()
   assert.equal(mod.getApplyCommandHint('seed-123'), '  pocket-buddy apply seed-123\n')
