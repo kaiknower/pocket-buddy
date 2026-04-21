@@ -43,7 +43,7 @@ function loadPackageVersion() {
 
 const VERSION = loadPackageVersion()
 const SALT = 'friend-2026-401'
-const CONFIG_PATH = join(homedir(), '.claude.json')
+const CONFIG_PATH = process.env.POCKET_BUDDY_CONFIG_PATH || join(homedir(), '.claude.json')
 const PREF_PATH = process.env.POCKET_BUDDY_PREF_PATH || join(homedir(), '.pocket-buddy.json')
 const MIN_CLAUDE_VERSION = '2.1.89'
 const GALLERY_URL = 'https://kaiknower.github.io/pocket-buddy/'
@@ -520,6 +520,10 @@ export function getHeroBannerText() {
 
 export function getPocketBuddyVersion() {
   return VERSION
+}
+
+export function getConfigPath() {
+  return CONFIG_PATH
 }
 
 function banner() {

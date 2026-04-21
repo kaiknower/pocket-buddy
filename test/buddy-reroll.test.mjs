@@ -53,6 +53,18 @@ test('saved language preference overrides the default', async () => {
   }
 })
 
+test('config path can be isolated with POCKET_BUDDY_CONFIG_PATH', async () => {
+  const dir = mkdtempSync(join(tmpdir(), 'pocket-buddy-config-'))
+  const configPath = join(dir, 'claude.json')
+
+  try {
+    const mod = await importFresh({ POCKET_BUDDY_CONFIG_PATH: configPath })
+    assert.equal(mod.getConfigPath(), configPath)
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+})
+
 test('interactive mode starts with quick-start search', async () => {
   const mod = await importFresh()
   assert.equal(mod.getInteractiveEntryPoint(), 'home')
